@@ -20,11 +20,11 @@ top rank in Wales is not equivalent to the top rank in England.
 There are harmonised indices of deprivation, based on more limited domains, combined for England and Wales.
 See [https://www.gov.uk/government/statistics/indices-of-deprivation-2019-income-and-employment-domains-combined-for-england-and-wales](https://www.gov.uk/government/statistics/indices-of-deprivation-2019-income-and-employment-domains-combined-for-england-and-wales).
 
-
 The adjusted indices data are available:
 
 * [Information about the dataset](https://data.bris.ac.uk/data/dataset/1ef3q32gybk001v77c1ifmty7x)
 * [Downloadable dataset (zip file)](https://data.bris.ac.uk/datasets/1ef3q32gybk001v77c1ifmty7x/1ef3q32gybk001v77c1ifmty7x.zip)
+
 
 
 # Background
@@ -33,7 +33,16 @@ We know socio-economic deprivation has a significant effect on health outcomes.
 
 We make rankings based on a wide-range of parameters and need to be able to harmonise across geographic boundaries.
 
-The excellent work by Abel, Payne and Barclay provides a way to do that. 
+Individual indices for a geographic region, such as England or for Wales, are available. If you are studying a 
+population from a single region, you can use the index for that region. 
+
+However, if your study population is from multiple areas, you cannot use disparate indices and assume rank 1 in, for example
+England, is the same as rank 1 in Wales. You must instead harmonise.
+
+The work by Abel, Payne and Barclay provides a way to harmonise across England and Wales, but there is also an index,
+based on fewer domains, published for England and Wales. 
+
+In practical terms, most studies will not want to use ranks directly, but instead use quartiles or quintiles.
 
 # What is this repository?
 
