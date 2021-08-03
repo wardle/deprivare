@@ -25,7 +25,7 @@ The adjusted indices data are available:
 * [Information about the dataset](https://data.bris.ac.uk/data/dataset/1ef3q32gybk001v77c1ifmty7x)
 * [Downloadable dataset (zip file)](https://data.bris.ac.uk/datasets/1ef3q32gybk001v77c1ifmty7x/1ef3q32gybk001v77c1ifmty7x.zip)
 
-
+See [my society](https://github.com/mysociety/composite_uk_imd) for a composite dataset for UK. 
 
 # Background
 
