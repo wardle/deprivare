@@ -1,0 +1,43 @@
+{:paths   ["src" "resources"]
+ :deps    {org.clojure/clojure         {:mvn/version "1.10.3"}
+           org.clojure/core.async      {:mvn/version "1.3.610"}
+           org.clojure/data.csv        {:mvn/version "1.0.0"}
+           org.clojure/data.xml        {:mvn/version "0.2.0-alpha6"}
+           org.clojure/data.zip        {:mvn/version "1.0.0"}
+           org.clojure/tools.logging   {:mvn/version "1.1.0"}
+
+           cli-matic/cli-matic         {:mvn/version "0.4.3"}
+           clj-bom/clj-bom             {:mvn/version "0.1.2"}
+           clj-http/clj-http           {:mvn/version "3.12.1"}
+           com.wsscode/pathom          {:git/url "https://github.com/wilkerlucio/pathom3"
+                                        :sha     "ccb9ed70ac56c87b1e28a4958089c129e8c24fa8"}}
+
+ :aliases {
+           :pathom-viz {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
+
+           :test       {:extra-paths ["test" "test/resources"]
+                        :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                                 :sha     "b6b3193fcc42659d7e46ecd1884a228993441182"}}
+                        :main-opts   ["-m" "cognitect.test-runner"]}
+
+           :log        {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.2.3"}}}
+
+           :outdated   {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+                        :main-opts  ["-m" "antq.core"]}
+
+           :check      {:extra-deps {athos/clj-check
+                                     {:git/url "https://github.com/athos/clj-check.git"
+                                      :sha     "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
+                        :main-opts  ["-m" "clj-check.check" "src"]}
+
+           :lint/kondo
+                       {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+                        :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
+
+           :lint/eastwood
+                       {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "fhir_r4" "serve"]}]
+                        :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}}
+
+           :jar        {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.211"}}
+                        :exec-fn      hf.depstar/jar
+                        :exec-args    {:jar "target/uk-deprivation-v0.1.0.jar"}}}}
