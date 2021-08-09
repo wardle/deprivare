@@ -1,6 +1,7 @@
 (ns com.eldrix.uk-depriv.core
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
+            [clojure.pprint :as pprint]
             [datalevin.core :as d])
   (:import (java.io Closeable)
            (java.time LocalDateTime)))
@@ -65,6 +66,9 @@
   and Barclay but calculated by Alex Parsons on behalf of MySociety."
     :download-fn download-uk-composite-imd-2020}})
 
+(defn print-available []
+  (pprint/print-table (map (fn [[k v]] (hash-map :key k :name (:title v))) (reverse (sort-by :year available-data)))))
+
 (comment
   (def reader (io/reader uk-composite-imd-2020-mysoc-url))
   (def lines (csv/read-csv reader))
@@ -95,4 +99,5 @@
          [?e :installed/id ?id]
          [?e :installed/date ?date-time]]
        (d/db (.-conn svc)))
+  (print-available)
   )
