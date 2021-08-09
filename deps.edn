@@ -13,6 +13,10 @@
                                       :sha     "ccb9ed70ac56c87b1e28a4958089c129e8c24fa8"}}
 
  :aliases {
+
+           :list       {:exec-fn com.eldrix.uk-depriv.core/print-available}
+           :info       {:exec-fn com.eldrix.uk-depriv.core/dataset-info}
+
            :pathom-viz {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
 
            :test       {:extra-paths ["test" "test/resources"]

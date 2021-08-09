@@ -59,15 +59,23 @@
 
 (def available-data
   {:uk-composite-imd-2020-mysoc
-   {:title       "UK composite index of multiple deprivation, 2020 (MySociety)."
+   {:title       "UK composite index of multiple deprivation, 2020 (MySociety)"
     :year        2020
-    :description "A composite UK score for deprivation indices for 2020 -
-  based on England with adjusted scores for the other nations as per Abel, Payne
-  and Barclay but calculated by Alex Parsons on behalf of MySociety."
+    :description "A composite UK score for deprivation indices for 2020 - based on England
+with adjusted scores for the other nations as per Abel, Payne and Barclay but
+calculated by Alex Parsons on behalf of MySociety."
     :download-fn download-uk-composite-imd-2020}})
 
-(defn print-available []
-  (pprint/print-table (map (fn [[k v]] (hash-map :key k :name (:title v))) (reverse (sort-by :year available-data)))))
+(defn print-available [_params]
+  (pprint/print-table (map (fn [[k v]] (hash-map :id (name k) :name (:title v))) (reverse (sort-by :year available-data)))))
+
+(defn dataset-info [params]
+  (if-let [dataset (get available-data (keyword (:dataset params)))]
+    (do
+      (println (:title dataset))
+      (println (apply str (repeat (count (:title dataset)) "-")))
+      (println (:description dataset)))
+    (println "Invalid :dataset parameter.\nUse clj -X:list to see available datasets.")))
 
 (comment
   (def reader (io/reader uk-composite-imd-2020-mysoc-url))

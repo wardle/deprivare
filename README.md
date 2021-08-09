@@ -6,9 +6,8 @@ This provides code and data for UK indices of deprivation.
 
 Deprivation is an important determinant of outcomes in health and care.
 
-This repository provides a simple microservice and embeddable library to allow
-other software to make use of deprivation indices in the UK such as in operational
-electronic health record systems and analytics. 
+This repository provides a simple microservice, embeddable library and simple 
+command-line tools to allow other software to make use of deprivation indices in the UK such as in operational electronic health record systems and analytics. 
 
 You can use the NHS Postcode Database to lookup a UK postal code and find out
 the LSOA code for that area. My microservice and library [nhspd](https://github.com/wardle/nhspd)
@@ -61,3 +60,55 @@ In essence, it provides a simple way to lookup a deprivation index based on LSOA
 A LSOA is a small defined geographical area of the UK containing about 1500 people designed to help report small
 area statistics.
 You can use [nhspd](https://github.com/wardle/nhspd) to map from a UK postal code to an LSOA.
+
+# Getting started
+
+1. Download and [install clojure](https://clojure.org/guides/getting_started).
+
+e.g. on mac os x with homebrew:
+
+```shell
+brew install clojure/tools/clojure
+```
+
+2. Clone this repository
+
+```shell
+git clone https://github.com/wardle/uk-deprivation
+cd uk-deprivation
+```
+
+3. List available datasets
+
+```shell
+clj -X:list
+```
+
+Result:
+
+```
+|                                                         :name |                         :id |
+|---------------------------------------------------------------+-----------------------------|
+| UK composite index of multiple deprivation, 2020 (MySociety). | uk-composite-imd-2020-mysoc |
+```
+
+4. Get information about a dataset
+
+Specify a key value pair, :dataset and the 'id' of the dataset in which you are interested.
+
+e.g.
+```shell
+clj -X:info :dataset uk-composite-imd-2020-mysoc
+```
+
+Result:
+
+```
+UK composite index of multiple deprivation, 2020 (MySociety)
+------------------------------------------------------------
+A composite UK score for deprivation indices for 2020 - based on England
+with adjusted scores for the other nations as per Abel, Payne and Barclay but
+calculated by Alex Parsons on behalf of MySociety.
+```
+
+5. Install a dataset into a file-based database.
