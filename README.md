@@ -81,7 +81,7 @@ cd uk-deprivation
 3. List available datasets
 
 ```shell
-clj -X:list
+clj -X:available
 ```
 
 Result:
@@ -119,7 +119,7 @@ clj -X:install :db depriv.db :dataset uk-composite-imd-2020-mysoc
 
 This will take a few seconds only.
 
-6. List your installed datasets:
+6. List installed datasets in a database:
 
 ```shell
 clj -X:installed :db depriv.db

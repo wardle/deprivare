@@ -86,7 +86,7 @@ calculated by Alex Parsons on behalf of MySociety."
                [{:installed/id   k
                  :installed/date (LocalDateTime/now)}]))
 
-(defn installed [{:keys [db]}]
+(defn print-installed [{:keys [db]}]
   (if db
     (let [svc (open (str db))
           ids (d/q '[:find [?id ...]
@@ -95,7 +95,7 @@ calculated by Alex Parsons on behalf of MySociety."
                      [?e :installed/id ?id]
                      [?e :installed/date ?date-time]]
                    (d/db (.-conn svc)))
-          result (map #(hash-map :id (name %) :title (:title (get available-data %))) ids)]
+          result (map #(hash-map :id (name %) :name (:title (get available-data %))) ids)]
       (pprint/print-table result))
     (println "Invalid :db parameter.\nUsage: clj -X:installed :db <database file>")))
 

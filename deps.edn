@@ -14,16 +14,16 @@
 
  :aliases {
 
-           :list       {:exec-fn com.eldrix.uk-depriv.core/print-available}
+           :available  {:exec-fn com.eldrix.uk-depriv.core/print-available}
            :info       {:exec-fn com.eldrix.uk-depriv.core/dataset-info}
-           :install    {:exec-fn com.eldrix.uk-depriv.core/install
-                        :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                      "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                      "--illegal-access=permit"]}
-           :installed  {:exec-fn com.eldrix.uk-depriv.core/installed
-                        :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                      "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                      "--illegal-access=permit"]}
+           :install    {:exec-fn  com.eldrix.uk-depriv.core/install
+                        :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                   "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                   "--illegal-access=permit"]}
+           :installed  {:exec-fn  com.eldrix.uk-depriv.core/print-installed
+                        :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                   "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                   "--illegal-access=permit"]}
 
            :pathom-viz {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
 
