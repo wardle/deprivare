@@ -94,8 +94,9 @@ calculated by Alex Parsons on behalf of MySociety."
                      :where
                      [?e :installed/id ?id]
                      [?e :installed/date ?date-time]]
-                   (d/db (.-conn svc)))]
-      (pprint/pprint ids))
+                   (d/db (.-conn svc)))
+          result (map #(hash-map :id (name %) :title (:title (get available-data %))) ids)]
+      (pprint/print-table result))
     (println "Invalid :db parameter.\nUsage: clj -X:installed :db <database file>")))
 
 (defn install [{:keys [db dataset]}]
