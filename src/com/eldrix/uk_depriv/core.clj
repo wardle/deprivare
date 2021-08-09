@@ -2,7 +2,8 @@
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [datalevin.core :as d])
+            [datalevin.core :as d]
+            [clojure.string :as str])
   (:import (java.io Closeable)
            (java.time LocalDateTime)))
 
@@ -64,7 +65,7 @@
     :description "A composite UK score for deprivation indices for 2020 - based on England
 with adjusted scores for the other nations as per Abel, Payne and Barclay but
 calculated by Alex Parsons on behalf of MySociety."
-    :download-fn download-uk-composite-imd-2020}})
+    :install-fn download-uk-composite-imd-2020}})
 
 (defn print-available [_params]
   (pprint/print-table (map (fn [[k v]] (hash-map :id (name k) :name (:title v))) (reverse (sort-by :year available-data)))))
@@ -76,6 +77,20 @@ calculated by Alex Parsons on behalf of MySociety."
       (println (apply str (repeat (count (:title dataset)) "-")))
       (println (:description dataset)))
     (println "Invalid :dataset parameter.\nUse clj -X:list to see available datasets.")))
+
+(defn install [{:keys [db dataset]}]
+  (if (and db dataset)
+    (if-let [dataset' (get available-data (keyword dataset))]
+      (with-open [svc (open (str db))]
+        (println "Installing dataset: " (:title dataset'))
+        ((:install-fn dataset') svc)
+        (println "Import complete"))
+      (println "Invalid :dataset parameter.\nUse clj -X:list to see available datasets."))
+    (println (str/join "\n"
+                       ["Invalid parameters"
+                        "Usage:   clj -X:install :db <database file> :dataset <dataset identifier>"
+                        "  - :db      - filename of database eg. 'depriv.db'"
+                        "  - :dataset - identifier of dataset eg. 'uk-composite-imd-2020-mysoc'"]))))
 
 (comment
   (def reader (io/reader uk-composite-imd-2020-mysoc-url))

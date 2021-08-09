@@ -16,6 +16,7 @@
 
            :list       {:exec-fn com.eldrix.uk-depriv.core/print-available}
            :info       {:exec-fn com.eldrix.uk-depriv.core/dataset-info}
+           :install  {:exec-fn com.eldrix.uk-depriv.core/install}
 
            :pathom-viz {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
 

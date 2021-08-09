@@ -112,3 +112,7 @@ calculated by Alex Parsons on behalf of MySociety.
 ```
 
 5. Install a dataset into a file-based database.
+
+```shell
+clj -X:install :db depriv.db :dataset uk-composite-imd-2020-mysoc
+```
