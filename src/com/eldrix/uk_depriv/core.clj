@@ -4,7 +4,7 @@
             [clojure.pprint :as pprint]
             [datalevin.core :as d]
             [clojure.string :as str])
-  (:import (java.io Closeable)
+  (:import (java.io Closeable File)
            (java.time LocalDateTime)))
 
 
@@ -24,8 +24,11 @@
   Closeable
   (close [_] (d/close conn)))
 
-(defn open [dir]
-  (->Svc (d/create-conn dir schema)))
+(defn open [dir & {:keys [read-only?] :or {read-only? true}}]
+  (if (and read-only? (not (.exists (File. dir))))
+    (do (println "Error: :db specified does not exist")
+        (System/exit 1))
+    (->Svc (d/create-conn dir schema))))
 
 (defn close [^Svc svc]
   (d/close (.-conn svc)))
@@ -65,7 +68,7 @@
     :description "A composite UK score for deprivation indices for 2020 - based on England
 with adjusted scores for the other nations as per Abel, Payne and Barclay but
 calculated by Alex Parsons on behalf of MySociety."
-    :install-fn download-uk-composite-imd-2020}})
+    :install-fn  download-uk-composite-imd-2020}})
 
 (defn print-available [_params]
   (pprint/print-table (map (fn [[k v]] (hash-map :id (name k) :name (:title v))) (reverse (sort-by :year available-data)))))
@@ -76,14 +79,32 @@ calculated by Alex Parsons on behalf of MySociety."
       (println (:title dataset))
       (println (apply str (repeat (count (:title dataset)) "-")))
       (println (:description dataset)))
-    (println "Invalid :dataset parameter.\nUse clj -X:list to see available datasets.")))
+    (println "Invalid :dataset parameter.\nUsage: clj -X:list to see available datasets.")))
+
+(defn register-dataset [svc k]
+  (d/transact! (.-conn svc)
+               [{:installed/id   k
+                 :installed/date (LocalDateTime/now)}]))
+
+(defn installed [{:keys [db]}]
+  (if db
+    (let [svc (open (str db))
+          ids (d/q '[:find [?id ...]
+                     :in $
+                     :where
+                     [?e :installed/id ?id]
+                     [?e :installed/date ?date-time]]
+                   (d/db (.-conn svc)))]
+      (pprint/pprint ids))
+    (println "Invalid :db parameter.\nUsage: clj -X:installed :db <database file>")))
 
 (defn install [{:keys [db dataset]}]
   (if (and db dataset)
     (if-let [dataset' (get available-data (keyword dataset))]
-      (with-open [svc (open (str db))]
+      (with-open [svc (open (str db) :read-only? false)]
         (println "Installing dataset: " (:title dataset'))
         ((:install-fn dataset') svc)
+        (register-dataset svc (keyword dataset))
         (println "Import complete"))
       (println "Invalid :dataset parameter.\nUse clj -X:list to see available datasets."))
     (println (str/join "\n"
@@ -116,7 +137,7 @@ calculated by Alex Parsons on behalf of MySociety."
          [?e :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_pop_decile ?decile]]
        (d/db (.-conn svc))
        "E01012672")
-  (d/q '[:find ?id ?date-time
+  (d/q '[:find [?id ...]
          :in $
          :where
          [?e :installed/id ?id]

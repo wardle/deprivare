@@ -116,3 +116,11 @@ calculated by Alex Parsons on behalf of MySociety.
 ```shell
 clj -X:install :db depriv.db :dataset uk-composite-imd-2020-mysoc
 ```
+
+This will take a few seconds only.
+
+6. List your installed datasets:
+
+```shell
+clj -X:installed :db depriv.db
+```
