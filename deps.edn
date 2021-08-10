@@ -24,6 +24,13 @@
                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
                                    "--illegal-access=permit"]}
+           :server     {:exec-fn     com.eldrix.uk-depriv.server/run-server
+                        :exec-args   {:port 8080}
+                        :extra-paths ["server"]
+                        :extra-deps  {ch.qos.logback/logback-classic {:mvn/version "1.2.3"}}
+                        :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                      "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                      "--illegal-access=permit"]}
 
            :pathom-viz {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
 
