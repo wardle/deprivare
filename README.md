@@ -6,7 +6,7 @@ This provides code and data for UK indices of deprivation.
 
 Deprivation is an important determinant of outcomes in health and care.
 
-This repository provides a simple microservice, embeddable library and simple 
+This repository provides a simple microservice, embeddable library and 
 command-line tools to allow other software to make use of deprivation indices in the UK such as in operational electronic health record systems and analytics. 
 
 You can use the NHS Postcode Database to lookup a UK postal code and find out
