@@ -15,17 +15,17 @@
 
  :aliases {
 
-           :available  {:exec-fn com.eldrix.uk-depriv.core/print-available}
-           :info       {:exec-fn com.eldrix.uk-depriv.core/dataset-info}
-           :install    {:exec-fn  com.eldrix.uk-depriv.core/install
+           :available  {:exec-fn com.eldrix.deprivare.core/print-available}
+           :info       {:exec-fn com.eldrix.deprivare.core/dataset-info}
+           :install    {:exec-fn  com.eldrix.deprivare.core/install
                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
                                    "--illegal-access=permit"]}
-           :installed  {:exec-fn  com.eldrix.uk-depriv.core/print-installed
+           :installed  {:exec-fn  com.eldrix.deprivare.core/print-installed
                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
                                    "--illegal-access=permit"]}
-           :server     {:exec-fn     com.eldrix.uk-depriv.server/run-server
+           :server     {:exec-fn     com.eldrix.deprivare.server/run-server
                         :exec-args   {:port 8080}
                         :extra-paths ["server"]
                         :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.5.8"}
