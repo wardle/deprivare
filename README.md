@@ -124,3 +124,32 @@ This will take a few seconds only.
 ```shell
 clj -X:installed :db depriv.db
 ```
+
+7. Run a web service (optional) on port 8080:
+
+```shell
+clj -X:server
+```
+
+You can specify a port to use, if you need different to the default:
+
+```shell
+clj -X:server :port 8081
+```
+
+You can then request deprivation data by LSOA:
+
+```shell
+➜  uk-deprivation git:(main) ✗ http -j 127.0.0.1:8080/v1/lsoa/E01012673
+```
+
+The results will vary depending on what datasets are installed:
+
+```json
+{
+    "UK_IMD_E_pop_decile": 1,
+    "UK_IMD_E_rank": 3.0,
+    "lsoa": "E01012673"
+}
+
+```

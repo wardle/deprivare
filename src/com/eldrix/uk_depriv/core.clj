@@ -114,6 +114,16 @@ calculated by Alex Parsons on behalf of MySociety."
                         "  - :db      - filename of database eg. 'depriv.db'"
                         "  - :dataset - identifier of dataset eg. 'uk-composite-imd-2020-mysoc'"]))))
 
+(defn fetch-lsoa [svc lsoa]
+  (-> (apply merge
+             (d/q '[:find [(pull ?e [*]) ...]
+                    :in $ ?lsoa
+                    :where
+                    [?e :lsoa ?lsoa]]
+                  (d/db (.-conn svc))
+                  lsoa))
+      (dissoc :db/id)))
+
 (comment
   (def reader (io/reader uk-composite-imd-2020-mysoc-url))
   (def lines (csv/read-csv reader))
@@ -123,7 +133,7 @@ calculated by Alex Parsons on behalf of MySociety."
   (take 5 (map parse-uk-composite-2020-mysoc (rest lines)))
   (d/transact! (.-conn svc) (map (fn [row]
                                    (parse-uk-composite-2020-mysoc row)) (rest lines)))
-
+  (d/transact! (.-conn svc) [{:lsoa "E01012672" :wibble 3}])
   (def svc (open "depriv.db"))
   (download-uk-composite-imd-2020 svc)
 
@@ -138,6 +148,8 @@ calculated by Alex Parsons on behalf of MySociety."
          [?e :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_pop_decile ?decile]]
        (d/db (.-conn svc))
        "E01012672")
+  (fetch-lsoa svc "E01012672")
+
   (d/q '[:find [?id ...]
          :in $
          :where
