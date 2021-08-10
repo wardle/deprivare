@@ -129,13 +129,13 @@ clj -X:installed :db depriv.db
 > This is currently in development and subject to change.
 
 ```shell
-clj -X:server
+clj -X:server :db depriv.db
 ```
 
 You can specify a port to use, if you need different to the default:
 
 ```shell
-clj -X:server :port 8081
+clj -X:server :db depriv.db :port 8081
 ```
 
 You can then request deprivation data by LSOA:
