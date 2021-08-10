@@ -1,4 +1,4 @@
-(ns com.eldrix.uk-depriv.server
+(ns com.eldrix.deprivare.server
   (:require [clojure.string :as str]
             [clojure.data.json :as json]
             [clojure.tools.logging.readable :as log]
@@ -6,7 +6,7 @@
             [io.pedestal.http.content-negotiation :as conneg]
             [io.pedestal.http.route :as route]
             [io.pedestal.interceptor :as intc]
-            [com.eldrix.uk-depriv.core :as depriv]))
+            [com.eldrix.deprivare.core :as deprivare]))
 
 (defn response [status body & {:as headers}]
   {:status  status
@@ -56,21 +56,21 @@
              context))})
 
 
-(def get-lsoa-deprivation
+(def get-uk-lsoa-deprivation
   {:name
-   ::get-lsoa-deprivation
+   ::get-uk-lsoa-deprivation
    :enter
    (fn [context]
      (let [svc (get-in context [:request ::service])
            pc (get-in context [:request :path-params :lsoa])]
        (if-not pc
          context
-         (assoc context :result (depriv/fetch-lsoa svc pc)))))})
+         (assoc context :result (deprivare/fetch-lsoa svc pc)))))})
 
 (def common-interceptors [coerce-body content-neg-intc entity-render])
 (def routes
   (route/expand-routes
-    #{["/v1/lsoa/:lsoa" :get (conj common-interceptors get-lsoa-deprivation)]}))
+    #{["/v1/uk/lsoa/:lsoa" :get (conj common-interceptors get-uk-lsoa-deprivation)]}))
 
 (defn inject-svc
   "A simple interceptor to inject service 'svc' into the context."
@@ -102,7 +102,7 @@
                              "Parameters:"
                              "  - :db     : path to database"
                              "  - :port   : HTTP port to use, optional, default 8080"]))
-    (with-open [svc (com.eldrix.uk-depriv.core/open (str db))]
+    (with-open [svc (deprivare/open (str db))]
       (log/info "starting server on port " port)
       (start-server svc port))))
 

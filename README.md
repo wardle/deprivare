@@ -126,6 +126,8 @@ clj -X:installed :db depriv.db
 
 7. Run a web service (optional) on port 8080:
 
+> This is currently in development and subject to change.
+
 ```shell
 clj -X:server
 ```
@@ -139,7 +141,7 @@ clj -X:server :port 8081
 You can then request deprivation data by LSOA:
 
 ```shell
-➜  deprivare git:(main) ✗ http -j 127.0.0.1:8080/v1/lsoa/E01012673
+➜  deprivare git:(main) ✗ http -j 127.0.0.1:8080/v1/uk/lsoa/E01012673
 ```
 
 The results will vary depending on what datasets are installed:

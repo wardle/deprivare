@@ -1,5 +1,6 @@
-(ns com.eldrix.uk-depriv.core
+(ns com.eldrix.deprivare.core
   (:require [clojure.data.csv :as csv]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [datalevin.core :as d]
@@ -35,8 +36,8 @@
 
 (defn parse-uk-composite-2020-mysoc [row]
   {:lsoa                                                           (get row 1)
-   :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_rank       (clojure.edn/read-string (get row 8))
-   :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_pop_decile (clojure.edn/read-string (get row 9))})
+   :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_rank       (edn/read-string (get row 8))
+   :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_pop_decile (edn/read-string (get row 9))})
 
 (def headers-uk-composite-2020-mysoc
   ["nation"
@@ -156,5 +157,4 @@ calculated by Alex Parsons on behalf of MySociety."
          [?e :installed/id ?id]
          [?e :installed/date ?date-time]]
        (d/db (.-conn svc)))
-  (print-available)
   )

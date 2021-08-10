@@ -57,9 +57,9 @@
                         :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
 
            :lint/eastwood
-                       {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "fhir_r4" "serve"]}]
+                       {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "server"]}]
                         :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}}
 
            :jar        {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.211"}}
                         :exec-fn      hf.depstar/jar
-                        :exec-args    {:jar "target/uk-deprivation-v0.1.0.jar"}}}}
+                        :exec-args    {:jar "target/deprivare-v0.1.0.jar"}}}}
