@@ -1,8 +1,8 @@
-# uk-deprivation
+# deprivare
 
-> Deprivation indices in the UK.
+This provides code and data for indices of deprivation, initially supporting the UK.
 
-This provides code and data for UK indices of deprivation.
+---
 
 Deprivation is an important determinant of outcomes in health and care.
 
@@ -55,11 +55,10 @@ top rank in Wales is not equivalent to the top rank in England.
 # What is this repository?
 
 This repository provides a way to automatically download and make those data available in computing systems. 
-It is designed to be composable with other data and computing services in a graph-like API. 
-In essence, it provides a simple way to lookup a deprivation index based on LSOA. 
+It is designed to be composable with other data and computing services including but not limited to use in a graph-like API. 
+In essence, it provides a simple way to lookup a deprivation index based on LSOA, in the UK. 
 A LSOA is a small defined geographical area of the UK containing about 1500 people designed to help report small
-area statistics.
-You can use [nhspd](https://github.com/wardle/nhspd) to map from a UK postal code to an LSOA.
+area statistics. You can use [nhspd](https://github.com/wardle/nhspd) to map from a UK postal code to an LSOA.
 
 # Getting started
 
@@ -74,8 +73,8 @@ brew install clojure/tools/clojure
 2. Clone this repository
 
 ```shell
-git clone https://github.com/wardle/uk-deprivation
-cd uk-deprivation
+git clone https://github.com/wardle/deprivare
+cd deprivare
 ```
 
 3. List available datasets
@@ -140,7 +139,7 @@ clj -X:server :port 8081
 You can then request deprivation data by LSOA:
 
 ```shell
-➜  uk-deprivation git:(main) ✗ http -j 127.0.0.1:8080/v1/lsoa/E01012673
+➜  deprivare git:(main) ✗ http -j 127.0.0.1:8080/v1/lsoa/E01012673
 ```
 
 The results will vary depending on what datasets are installed:
