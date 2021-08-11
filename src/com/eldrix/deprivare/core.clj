@@ -35,7 +35,7 @@
   (d/close (.-conn svc)))
 
 (defn parse-uk-composite-2020-mysoc [row]
-  {:lsoa                                                           (get row 1)
+  {:uk.gov.ons/lsoa                                 (get row 1)
    :uk-composite-imd-2020-mysoc/UK_IMD_E_rank       (edn/read-string (get row 8))
    :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile (edn/read-string (get row 9))})
 
@@ -120,7 +120,7 @@ calculated by Alex Parsons on behalf of MySociety."
              (d/q '[:find [(pull ?e [*]) ...]
                     :in $ ?lsoa
                     :where
-                    [?e :lsoa ?lsoa]]
+                    [?e :uk.gov.ons/lsoa ?lsoa]]
                   (d/db (.-conn svc))
                   lsoa))
       (dissoc :db/id)))
