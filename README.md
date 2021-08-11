@@ -83,12 +83,12 @@ cd deprivare
 clj -X:available
 ```
 
-Result:
+Result:  
 
 ```
-|                                                         :name |                         :id |
-|---------------------------------------------------------------+-----------------------------|
-| UK composite index of multiple deprivation, 2020 (MySociety). | uk-composite-imd-2020-mysoc |
+|                                                        :name |                         :id |
+|--------------------------------------------------------------+-----------------------------|
+| UK composite index of multiple deprivation, 2020 (MySociety) | uk-composite-imd-2020-mysoc |
 ```
 
 4. Get information about a dataset
@@ -144,13 +144,15 @@ You can then request deprivation data by LSOA:
 ➜  deprivare git:(main) ✗ http -j 127.0.0.1:8080/v1/uk/lsoa/E01012673
 ```
 
-The results will vary depending on what datasets are installed:
+The results will vary depending on what datasets are installed, but will be
+of the form <dataset>/<key>.
 
 ```json
 {
-    "UK_IMD_E_pop_decile": 1,
-    "UK_IMD_E_rank": 3.0,
-    "lsoa": "E01012673"
+  "lsoa": "E01012672",
+  "uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile": 1,
+  "uk-composite-imd-2020-mysoc/UK_IMD_E_rank": 5.0
 }
+
 
 ```

@@ -19,6 +19,11 @@
 (def supported-types ["text/html" "application/edn" "application/json" "text/plain"])
 (def content-neg-intc (conneg/negotiate-content supported-types))
 
+(defn make-key-string [k]
+  (if-let [ns (namespace k)]
+    (str ns "/" (name k))
+    (name k)))
+
 (defn transform-content
   [body content-type]
   (when body
@@ -26,7 +31,7 @@
       "text/html" body
       "text/plain" body
       "application/edn" (pr-str body)
-      "application/json" (json/write-str body))))
+      "application/json" (json/write-str body :key-fn make-key-string))))
 
 (defn accepted-type
   [context]

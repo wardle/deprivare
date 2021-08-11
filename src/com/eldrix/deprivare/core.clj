@@ -35,9 +35,9 @@
   (d/close (.-conn svc)))
 
 (defn parse-uk-composite-2020-mysoc [row]
-  {:lsoa                                                           (get row 1)
-   :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_rank       (edn/read-string (get row 8))
-   :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_pop_decile (edn/read-string (get row 9))})
+  {:uk.gov.ons/lsoa                                 (get row 1)
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_rank       (edn/read-string (get row 8))
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile (edn/read-string (get row 9))})
 
 (def headers-uk-composite-2020-mysoc
   ["nation"
@@ -120,7 +120,7 @@ calculated by Alex Parsons on behalf of MySociety."
              (d/q '[:find [(pull ?e [*]) ...]
                     :in $ ?lsoa
                     :where
-                    [?e :lsoa ?lsoa]]
+                    [?e :uk.gov.ons/lsoa ?lsoa]]
                   (d/db (.-conn svc))
                   lsoa))
       (dissoc :db/id)))
@@ -145,12 +145,13 @@ calculated by Alex Parsons on behalf of MySociety."
          :in $ ?lsoa
          :where
          [?e :lsoa ?lsoa]
-         [?e :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_rank ?rank]
-         [?e :com.github.mysociety.composite_uk_imd.2020/UK_IMD_E_pop_decile ?decile]]
+         [?e :uk-composite-imd-2020-mysoc/UK_IMD_E_rank ?rank]
+         [?e :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile ?decile]]
        (d/db (.-conn svc))
        "E01012672")
   (fetch-lsoa svc "E01012672")
-
+  (require 'clojure.data.json)
+  (clojure.data.json/write-str (fetch-lsoa svc "E01012672") :key-fn (fn [k] (str (namespace k) "-" (name k))))
   (d/q '[:find [?id ...]
          :in $
          :where
