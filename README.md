@@ -88,6 +88,8 @@ Result:
 ```
 |                                                        :name |                         :id |
 |--------------------------------------------------------------+-----------------------------|
+|                 Welsh Index of Deprivation - quantiles, 2019 |    wales-imd-2019-quantiles |
+|                     Welsh Index of Deprivation - ranks, 2019 |        wales-imd-2019-ranks |
 | UK composite index of multiple deprivation, 2020 (MySociety) | uk-composite-imd-2020-mysoc |
 ```
 
@@ -110,13 +112,16 @@ with adjusted scores for the other nations as per Abel, Payne and Barclay but
 calculated by Alex Parsons on behalf of MySociety.
 ```
 
-5. Install a dataset into a file-based database.
+5. Install dataset(s) into a file-based database.
 
 ```shell
 clj -X:install :db depriv.db :dataset uk-composite-imd-2020-mysoc
+clj -X:install :db depriv.db :dataset wales-imd-2019-quantiles
+clj -X:install :db depriv.db :dataset wales-imd-2019-ranks
 ```
 
-This will take a few seconds only.
+Each dataset will be downloaded and then imported.
+Each will take a few seconds only.
 
 6. List installed datasets in a database:
 
@@ -129,19 +134,19 @@ clj -X:installed :db depriv.db
 > This is currently in development and subject to change.
 
 ```shell
-clj -X:server
+clj -X:server :db depriv.db
 ```
 
 You can specify a port to use, if you need different to the default:
 
 ```shell
-clj -X:server :port 8081
+clj -X:server :db depriv.db :port 8081
 ```
 
 You can then request deprivation data by LSOA:
 
 ```shell
-➜  deprivare git:(main) ✗ http -j 127.0.0.1:8080/v1/uk/lsoa/E01012673
+➜  deprivare git:(main) ✗ http -j 127.0.0.1:8080/v1/uk/lsoa/W01001552
 ```
 
 The results will vary depending on what datasets are installed, but will be
@@ -149,10 +154,33 @@ of the form <dataset>/<key>.
 
 ```json
 {
-  "lsoa": "E01012672",
-  "uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile": 1,
-  "uk-composite-imd-2020-mysoc/UK_IMD_E_rank": 5.0
+  "uk-composite-imd-2020-mysoc/E_expanded_decile": "9.0",
+  "uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile": "9",
+  "uk-composite-imd-2020-mysoc/UK_IMD_E_pop_quintile": "5",
+  "uk-composite-imd-2020-mysoc/UK_IMD_E_rank": "35619.0",
+  "uk-composite-imd-2020-mysoc/UK_IMD_E_score": "7.774724171895473",
+  "uk-composite-imd-2020-mysoc/employment_score": "2.0",
+  "uk-composite-imd-2020-mysoc/income_score": "2.0",
+  "uk-composite-imd-2020-mysoc/nation": "W",
+  "uk-composite-imd-2020-mysoc/original_decile": "10",
+  "uk-composite-imd-2020-mysoc/overall_local_score": "3.7",
+  "uk.gov.ons/lsoa": "W01001552",
+  "wales-imd-2019/access_to_services": "868",
+  "wales-imd-2019/authority-name": "Monmouthshire",
+  "wales-imd-2019/community_safety": "1894",
+  "wales-imd-2019/education": "1894",
+  "wales-imd-2019/employment": "1867",
+  "wales-imd-2019/health": "1882",
+  "wales-imd-2019/housing": "1845",
+  "wales-imd-2019/income": "1905",
+  "wales-imd-2019/lsoa-name": "Dixton with Osbaston",
+  "wales-imd-2019/physical_environment": "442",
+  "wales-imd-2019/wimd_2019": "1817",
+  "wales-imd-2019/wimd_2019_decile": "10",
+  "wales-imd-2019/wimd_2019_quartile": "4",
+  "wales-imd-2019/wimd_2019_quintile": "5"
 }
+```
 
 
 ```
