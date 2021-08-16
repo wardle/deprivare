@@ -122,6 +122,18 @@ calculated by Alex Parsons on behalf of MySociety.
 
 5. Install dataset(s) into a file-based database.
 
+You can ask for all known datasets to be installed.
+
+```shell
+clj -X:install-all :db depriv.db
+```
+
+Usually, installing all known datasets is reasonable. The file-based database
+is backed by an optimised memory-mapped key value store (lmdb) with excellent
+read-performance. 
+
+Alternatively, you can install a specific set of datasets:
+
 ```shell
 clj -X:install :db depriv.db :dataset uk-composite-imd-2020-mysoc
 clj -X:install :db depriv.db :dataset wales-imd-2019-quantiles
@@ -193,4 +205,13 @@ The keys are a close reproduction of the original source data.
 ```
 
 
+I usually advise thinking of a service as immutable once created. That means
+you create a service and potentially keep it running. I tend to switch versions
+by using an API gateway or reverse proxy. Given the nature of deprivation data,
+you will likely only switch to a different running service as and when new
+datasets become available. Alternatively, you can, of course, add a new dataset 
+to an existing database. But generally, I advise thinking of these services
+as disposable and potentially ephemeral. Think [cattle not pets](http://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/). 
 ```
+
+*Mark*

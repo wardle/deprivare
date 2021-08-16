@@ -18,51 +18,55 @@
 
  :aliases {
 
-           :available  {:exec-fn com.eldrix.deprivare.core/print-available}
-           :info       {:exec-fn com.eldrix.deprivare.core/dataset-info}
-           :install    {:exec-fn  com.eldrix.deprivare.core/install
-                        :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                   "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                   "--illegal-access=permit"]}
-           :installed  {:exec-fn  com.eldrix.deprivare.core/print-installed
-                        :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                   "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                   "--illegal-access=permit"]}
-           :server     {:exec-fn     com.eldrix.deprivare.server/run-server
-                        :exec-args   {:port 8080}
-                        :extra-paths ["server"]
-                        :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.5.8"}
-                                      io.pedestal/pedestal.jetty     {:mvn/version "0.5.8"}
-                                      ch.qos.logback/logback-classic {:mvn/version "1.2.5"}}
-                        :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                      "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                      "--illegal-access=permit"]}
+           :available   {:exec-fn com.eldrix.deprivare.core/print-available}
+           :info        {:exec-fn com.eldrix.deprivare.core/dataset-info}
+           :install     {:exec-fn  com.eldrix.deprivare.core/install
+                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                    "--illegal-access=permit"]}
+           :install-all {:exec-fn  com.eldrix.deprivare.core/install-all
+                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                    "--illegal-access=permit"]}
+           :installed   {:exec-fn  com.eldrix.deprivare.core/print-installed
+                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                    "--illegal-access=permit"]}
+           :server      {:exec-fn     com.eldrix.deprivare.server/run-server
+                         :exec-args   {:port 8080}
+                         :extra-paths ["server"]
+                         :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.5.8"}
+                                       io.pedestal/pedestal.jetty     {:mvn/version "0.5.8"}
+                                       ch.qos.logback/logback-classic {:mvn/version "1.2.5"}}
+                         :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
+                                       "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
+                                       "--illegal-access=permit"]}
 
-           :pathom-viz {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
+           :pathom-viz  {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2021.04.20"}}}
 
-           :test       {:extra-paths ["test" "test/resources"]
-                        :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                                 :sha     "b6b3193fcc42659d7e46ecd1884a228993441182"}}
-                        :main-opts   ["-m" "cognitect.test-runner"]}
+           :test        {:extra-paths ["test" "test/resources"]
+                         :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                                  :sha     "b6b3193fcc42659d7e46ecd1884a228993441182"}}
+                         :main-opts   ["-m" "cognitect.test-runner"]}
 
-           :log        {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.2.5"}}}
+           :log         {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.2.5"}}}
 
-           :outdated   {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
-                        :main-opts  ["-m" "antq.core"]}
+           :outdated    {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+                         :main-opts  ["-m" "antq.core"]}
 
-           :check      {:extra-deps {athos/clj-check
-                                     {:git/url "https://github.com/athos/clj-check.git"
-                                      :sha     "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
-                        :main-opts  ["-m" "clj-check.check" "src"]}
+           :check       {:extra-deps {athos/clj-check
+                                      {:git/url "https://github.com/athos/clj-check.git"
+                                       :sha     "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
+                         :main-opts  ["-m" "clj-check.check" "src"]}
 
            :lint/kondo
-                       {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
-                        :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
+                        {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+                         :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
 
            :lint/eastwood
-                       {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "server"]}]
-                        :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}}
+                        {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "server"]}]
+                         :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}}
 
-           :jar        {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.211"}}
-                        :exec-fn      hf.depstar/jar
-                        :exec-args    {:jar "target/deprivare-v0.1.0.jar"}}}}
+           :jar         {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.211"}}
+                         :exec-fn      hf.depstar/jar
+                         :exec-args    {:jar "target/deprivare-v0.1.0.jar"}}}}

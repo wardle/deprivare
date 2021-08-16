@@ -15,3 +15,7 @@
   {::pco/output [:uk-composite-imd-2020-mysoc/UK_IMD_E_rank
                  :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile]}
   (depriv/fetch-lsoa svc lsoa))
+
+
+
+(def all-resolvers [indices-by-lsoa])
