@@ -44,15 +44,18 @@
                [{:installed/id   k
                  :installed/date (LocalDateTime/now)}]))
 
+(defn fetch-installed [^Svc svc]
+  (d/q '[:find [?id ...]
+         :in $
+         :where
+         [?e :installed/id ?id]
+         [?e :installed/date ?date-time]]
+       (d/db (.-conn svc))))
+
 (defn print-installed [{:keys [db]}]
   (if db
     (let [svc (open (str db))
-          ids (d/q '[:find [?id ...]
-                     :in $
-                     :where
-                     [?e :installed/id ?id]
-                     [?e :installed/date ?date-time]]
-                   (d/db (.-conn svc)))
+          ids (fetch-installed svc)
           result (map #(hash-map :id (name %) :name (:title (get datasets/available-data %))) ids)]
       (pprint/print-table result))
     (println "Invalid :db parameter.\nUsage: clj -X:installed :db <database file>")))
