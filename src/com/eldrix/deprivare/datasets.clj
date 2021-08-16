@@ -59,7 +59,7 @@
                          "wimd-2019-" ".ods")
         data (odf/sheet-data f "WIMD_2019_ranks"
                              :headings (map #(keyword "wales-imd-2019" (name %))
-                                            [:lsoa :lsoa-name :authority-name :wimd_2019 :income :employment :health :education :access_to_services :housing :community_safety :physical_environment])
+                                            [:lsoa :lsoa_name :authority_name :wimd_2019 :income :employment :health :education :access_to_services :housing :community_safety :physical_environment])
                              :pred #(and (= (count %) 12) (.startsWith (first %) "W")))]
     (doall (->> data
                 (map #(assoc % :uk.gov.ons/lsoa (:wales-imd-2019/lsoa %)
@@ -72,7 +72,7 @@
                          "wimd-2019-" ".ods")
         data (odf/sheet-data f "Deciles_quintiles_quartiles"
                              :headings (map #(keyword "wales-imd-2019" (name %))
-                                            [:lsoa :lsoa-name :authority-name :wimd_2019 :wimd_2019_decile :wimd_2019_quintile :wimd_2019_quartile])
+                                            [:lsoa :lsoa_name :authority_name :wimd_2019 :wimd_2019_decile :wimd_2019_quintile :wimd_2019_quartile])
                              :pred (fn [row] (and (= (count row) 7) (.startsWith (first row) "W"))))]
     (doall (->> data
                 (map #(assoc % :uk.gov.ons/lsoa (:wales-imd-2019/lsoa %)
@@ -90,20 +90,36 @@
                                  :description (str/join "\n" ["A composite UK score for deprivation indices for 2020 - based on England"
                                                               "with adjusted scores for the other nations as per Abel, Payne and Barclay but"
                                                               "calculated by Alex Parsons on behalf of MySociety."])
+                                 :properties  ["E_expanded_decile" "UK_IMD_E_pop_decile" "UK_IMD_E_pop_quintile" "UK_IMD_E_rank" "UK_IMD_E_score" "employment_score" "income_score" "nation" "original_decile" "overall_local_score"]
                                  :stream-fn   stream-uk-composite-imd-2020}
    :wales-imd-2019-ranks        {:title       "Welsh Index of Deprivation - ranks, 2019"
                                  :year        2019
                                  :description "Welsh Index of Deprivation - raw ranks for each domain, by LSOA."
+                                 :namespace   "wales-imd-2019"
+                                 :properties  ["lsoa_name" "authority_name" "access_to_services" "community_safety" "education" "employment" "health" "housing"
+                                               "income" "physical_environment" "wimd_2019"]
                                  :stream-fn   stream-wales-imd-2019-ranks}
    :wales-imd-2019-quantiles    {:title       "Welsh Index of Deprivation - quantiles, 2019"
                                  :year        2019
                                  :description "Welsh Index of Deprivation - with composite rank with decile, quintile and quartile."
+                                 :namespace   "wales-imd-2019"
+                                 :properties  ["lsoa_name" "authority_name" "wimd_2019" "wimd_2019_decile" "wimd_2019_quintile" "wimd_2019_quartile"]
                                  :stream-fn   stream-wales-imd-2019-quantiles}})
 
 
+(defn properties-for-dataset [dataset]
+  (let [dataset' (get available-data (keyword dataset))
+        nspace (or (:namespace dataset') (name dataset))]
+    (set (map #(keyword nspace (name %))
+              (:properties dataset')))))
+
+(defn properties-for-datasets [datasets]
+  (apply clojure.set/union (map properties-for-dataset datasets)))
+
 (comment
 
-
+  (properties-for-dataset :uk-composite-imd-2020-mysoc)
+  (properties-for-datasets [:uk-composite-imd-2020-mysoc :wales-imd-2019-quantiles])
   (def ch (a/chan 16 (partition-all 5)))
   (a/thread (stream-wales-imd-2019-ranks ch))
   (a/<!! ch)
