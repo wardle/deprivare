@@ -1,21 +1,41 @@
 (ns com.eldrix.deprivare.graph
   (:require [com.eldrix.deprivare.core :as depriv]
+            [com.eldrix.deprivare.datasets :as datasets]
             [com.wsscode.pathom3.connect.operation :as pco]
             [com.wsscode.pathom3.connect.indexes :as pci]
             [com.wsscode.pathom3.plugin :as p.plugin]
             [com.wsscode.pathom3.connect.built-in.resolvers :as pbir]
             [com.wsscode.pathom3.connect.built-in.plugins :as pbip]
             [com.wsscode.pathom3.connect.runner :as pcr]
-            [com.wsscode.pathom3.interface.eql :as p.eql]))
+            [com.wsscode.pathom3.interface.eql :as p.eql])
+  (:import (com.eldrix.deprivare.core Svc)))
 
 
-(pco/defresolver indices-by-lsoa
-  "Returns deprivation indices by UK LSOA"
-  [{::keys [svc]} {:uk.gov.ons/keys [lsoa]}]
-  {::pco/output [:uk-composite-imd-2020-mysoc/UK_IMD_E_rank
-                 :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile]}
-  (depriv/fetch-lsoa svc lsoa))
+(defn make-lsoa-resolver
+  "Dynamically create a graph resolver based on the installed datasets
+  within the service specified."
+  [^Svc svc]
+  (pco/resolver {::pco/op-name 'indices-by-lsoa
+                 ::pco/input [:uk.gov.ons/lsoa]
+                 ::pco/output  (vec (datasets/properties-for-datasets (depriv/fetch-installed svc)))
+                 ::pco/resolve (fn [_env {:uk.gov.ons/keys [lsoa]}]
+                                 (depriv/fetch-lsoa svc lsoa))}))
 
+(defn make-all-resolvers [^Svc svc]
+  [(make-lsoa-resolver svc)])
 
-
-(def all-resolvers [indices-by-lsoa])
+(comment
+  (def svc (depriv/open "depriv.db"))
+  (def lsoa-resolver (make-lsoa-resolver svc))
+  (lsoa-resolver {:uk.gov.ons/lsoa "W01000001"})
+  (depriv/fetch-installed svc)
+  (vec (datasets/properties-for-datasets (depriv/fetch-installed svc)))
+  (def env (pci/register (make-all-resolvers svc)))
+  env
+  (depriv/fetch-lsoa svc "W01000001")
+  (p.eql/process env {:uk.gov.ons/lsoa "W01000001"}
+                 [:uk.gov.ons/lsoa :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile])
+  (p.eql/process env
+                 [{[:uk.gov.ons/lsoa "W01000001"]
+                   [:uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile]}])
+  )
