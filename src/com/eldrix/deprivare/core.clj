@@ -1,13 +1,8 @@
 (ns com.eldrix.deprivare.core
   (:require [clojure.core.async :as a]
-            [clojure.data.csv :as csv]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
-            [clj-http.client :as client]
             [com.eldrix.deprivare.datasets :as datasets]
-            [com.eldrix.deprivare.odf :as odf]
             [datalevin.core :as d])
   (:import (java.io Closeable File)
            (java.time LocalDateTime)))
@@ -100,17 +95,8 @@
       (dissoc :db/id :dataset)))
 
 (comment
-  (def reader (io/reader uk-composite-imd-2020-mysoc-url))
-  (def lines (csv/read-csv reader))
-  (first lines)
-  (second lines)
-  (take 5 lines)
-  (take 5 (map parse-uk-composite-2020-mysoc (rest lines)))
-  (d/transact! (.-conn svc) (map (fn [row]
-                                   (parse-uk-composite-2020-mysoc row)) (rest lines)))
-  (d/transact! (.-conn svc) [{:lsoa "E01012672" :wibble 3}])
+
   (def svc (open "depriv.db"))
-  (download-uk-composite-imd-2020 svc)
 
   (d/transact! (.-conn svc)
                [{:installed/id   :uk-composite-imd-2020-mysoc2
@@ -134,7 +120,6 @@
        (d/db (.-conn svc)))
 
 
-  (d/transact! (.-conn svc) (a/<!! ch))
   (d/q '[:find [(pull ?e [*]) ...]
          :in $ ?lsoa
          :where

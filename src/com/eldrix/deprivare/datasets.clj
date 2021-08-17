@@ -1,6 +1,7 @@
 (ns com.eldrix.deprivare.datasets
   (:require [clj-http.client :as client]
             [clojure.java.io :as io]
+            [clojure.set :as set]
             [clojure.string :as str]
             [clojure.core.async :as a]
             [com.eldrix.deprivare.odf :as odf]
@@ -73,7 +74,7 @@
         data (odf/sheet-data f "Deciles_quintiles_quartiles"
                              :headings (map #(keyword "wales-imd-2019" (name %))
                                             [:lsoa :lsoa_name :authority_name :wimd_2019 :wimd_2019_decile :wimd_2019_quintile :wimd_2019_quartile])
-                             :pred (fn [row] (and (= (count row) 7) (.startsWith (first row) "W"))))]
+                             :pred (fn [row] (and (= (count row) 7) (.startsWith ^String (first row) "W"))))]
     (doall (->> data
                 (map #(assoc % :uk.gov.ons/lsoa (:wales-imd-2019/lsoa %)
                                :dataset :wales-imd-2019-quantiles))
@@ -114,7 +115,7 @@
               (:properties dataset')))))
 
 (defn properties-for-datasets [datasets]
-  (apply clojure.set/union (map properties-for-dataset datasets)))
+  (apply set/union (map properties-for-dataset datasets)))
 
 (comment
 

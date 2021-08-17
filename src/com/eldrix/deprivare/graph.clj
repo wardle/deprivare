@@ -3,10 +3,6 @@
             [com.eldrix.deprivare.datasets :as datasets]
             [com.wsscode.pathom3.connect.operation :as pco]
             [com.wsscode.pathom3.connect.indexes :as pci]
-            [com.wsscode.pathom3.plugin :as p.plugin]
-            [com.wsscode.pathom3.connect.built-in.resolvers :as pbir]
-            [com.wsscode.pathom3.connect.built-in.plugins :as pbip]
-            [com.wsscode.pathom3.connect.runner :as pcr]
             [com.wsscode.pathom3.interface.eql :as p.eql])
   (:import (com.eldrix.deprivare.core Svc)))
 

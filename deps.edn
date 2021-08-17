@@ -7,8 +7,6 @@
            org.clojure/data.zip      {:mvn/version "1.0.0"}
            org.clojure/tools.logging {:mvn/version "1.1.0"}
 
-           cli-matic/cli-matic       {:mvn/version "0.4.3"}
-           clj-bom/clj-bom           {:mvn/version "0.1.2"}
            clj-http/clj-http         {:mvn/version "3.12.3"}
            datalevin/datalevin       {:mvn/version "0.4.40"}
            com.wsscode/pathom3       {:mvn/version "2021.08.14-alpha"}}
@@ -62,7 +60,10 @@
 
            :lint/eastwood
                         {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "server"]}]
-                         :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}}}
+                         :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}
+                                      io.pedestal/pedestal.service   {:mvn/version "0.5.9"}
+                                      io.pedestal/pedestal.jetty     {:mvn/version "0.5.9"}}
+                         :extra-paths ["server"]}
 
            :jar         {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.278"}}
                          :exec-fn      hf.depstar/jar
