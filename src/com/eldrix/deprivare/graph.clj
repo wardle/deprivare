@@ -12,7 +12,7 @@
   within the service specified."
   [^Svc svc]
   (pco/resolver {::pco/op-name 'indices-by-lsoa
-                 ::pco/input [:uk.gov.ons/lsoa]
+                 ::pco/input   [:uk.gov.ons/lsoa]
                  ::pco/output  (vec (datasets/properties-for-datasets (depriv/fetch-installed svc)))
                  ::pco/resolve (fn [_env {:uk.gov.ons/keys [lsoa]}]
                                  (depriv/fetch-lsoa svc lsoa))}))
