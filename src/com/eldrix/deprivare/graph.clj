@@ -17,7 +17,12 @@
                  ::pco/resolve (fn [_env {:uk.gov.ons/keys [lsoa]}]
                                  (depriv/fetch-lsoa svc lsoa))}))
 
-(defn make-all-resolvers [^Svc svc]
+(defn make-all-resolvers
+  "Returns dynamically generated resolver(s) for deprivation indices based
+  on what is installed in the `deprivare` service specified. As this closes
+  over the service itself, the pathom environment does not need any specific
+  set-up."
+  [^Svc svc]
   [(make-lsoa-resolver svc)])
 
 (comment
