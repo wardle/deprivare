@@ -34,9 +34,12 @@
   (def env (pci/register (make-all-resolvers svc)))
   env
   (depriv/fetch-lsoa svc "W01000001")
-  (p.eql/process env {:uk.gov.ons/lsoa "W01000001"}
-                 [:uk.gov.ons/lsoa :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile])
+  (p.eql/process env
+                 {:uk.gov.ons/lsoa "W01000001"}
+                 [:uk.gov.ons/lsoa :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile :wales-imd-2019/wimd_2019_decile])
+
   (p.eql/process env
                  [{[:uk.gov.ons/lsoa "W01000001"]
-                   [:uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile]}])
+                   [:uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile
+                    :wales-imd-2019/wimd_2019_decile]}])
   )
