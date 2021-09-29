@@ -5,9 +5,31 @@
             [clojure.string :as str]
             [clojure.core.async :as a]
             [com.eldrix.deprivare.odf :as odf]
-            [clojure.data.csv :as csv])
+            [clojure.data.csv :as csv]
+            [clojure.edn :as edn])
   (:import [java.io File]))
 
+(defn parse-double [s] (Double/parseDouble s))
+(defn parse-long [s] (Long/parseLong s))
+(defn parse-double-as-long [s] (long (Double/parseDouble s)))
+(def property-parsers
+  {:uk-composite-imd-2020-mysoc/income_score          parse-double
+   :uk-composite-imd-2020-mysoc/E_expanded_decile     parse-double-as-long
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_score        parse-double
+   :uk-composite-imd-2020-mysoc/overall_local_score   parse-double
+   :uk-composite-imd-2020-mysoc/original_decile       parse-long
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_rank         parse-double-as-long
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_quintile parse-long
+   :uk-composite-imd-2020-mysoc/employment_score      parse-double
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile   parse-long})
+
+(defn parse
+  [m]
+  (reduce-kv (fn [acc k v]
+               (if-let [parser (get property-parsers k)]
+                 (assoc acc k (try (parser v) (catch Exception e
+                                                (throw (ex-info "failed to parse" {:k k :v v})))))
+                 (assoc acc k v))) {} m))
 
 (defn- download-file
   "Downloads a file from a URL to a temporary file, which is returned.
@@ -50,6 +72,7 @@
                                      (map #(keyword "uk-composite-imd-2020-mysoc" %))
                                      repeat)
                          (rest lines))
+                    (map parse)
                     (map #(assoc % :uk.gov.ons/lsoa (:uk-composite-imd-2020-mysoc/lsoa %)
                                    :dataset :uk-composite-imd-2020-mysoc))
                     (map #(dissoc % :uk-composite-imd-2020-mysoc/lsoa))

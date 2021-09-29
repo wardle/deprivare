@@ -8,7 +8,16 @@
            (java.time LocalDateTime)))
 
 (def schema
-  {})
+  {:uk-composite-imd-2020-mysoc/UK_IMD_E_rank {:db/valueType :db.type/long}
+   :uk-composite-imd-2020-mysoc/income_score {:db/valueType :db.type/double}
+   :uk-composite-imd-2020-mysoc/E_expanded_decile {:db/valueType :db.type/long}
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_score {:db/valueType :db.type/double}
+   :uk-composite-imd-2020-mysoc/overall_local_score {:db/valueType :db.type/double}
+   :uk-composite-imd-2020-mysoc/original_decile {:db/valueType :db.type/long}
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_quintile {:db/valueType :db.type/long}
+   :uk-composite-imd-2020-mysoc/employment_score {:db/valueType :db.type/double}
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile {:db/valueType :db.type/long}
+   })
 
 (deftype Svc [conn]
   Closeable
@@ -55,6 +64,7 @@
       (pprint/print-table result))
     (println "Invalid :db parameter.\nUsage: clj -X:installed :db <database file>")))
 
+
 (defn install [{:keys [db dataset]}]
   (if (and db dataset)
     (if-let [dataset' (get datasets/available-data (keyword dataset))]
@@ -94,6 +104,18 @@
                   lsoa))
       (dissoc :db/id :dataset)))
 
+(defn fetch-max
+  "Return the maximum value of the keyword specified.
+  Useful if you want to calculate something special from a rank.
+  For example, (fetch-max svc :uk-composite-imd-2020-mysoc/UK_IMD_E_rank)"
+  [svc k]
+  (d/q '[:find (max ?x) .
+         :in $ ?k
+         :where
+         [_ ?k ?x]]
+       (d/db (.-conn svc))
+       k))
+
 (comment
 
   (def svc (open "depriv.db"))
@@ -104,11 +126,18 @@
   (d/q '[:find ?rank ?decile
          :in $ ?lsoa
          :where
-         [?e :lsoa ?lsoa]
+         [?e :uk.gov.ons/lsoa ?lsoa]
          [?e :uk-composite-imd-2020-mysoc/UK_IMD_E_rank ?rank]
          [?e :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile ?decile]]
        (d/db (.-conn svc))
        "E01012672")
+
+  (d/q '[:find (max ?rank) .
+         :in $
+         :where
+         [_ :uk-composite-imd-2020-mysoc/UK_IMD_E_rank ?rank]]
+       (d/db (.-conn svc)))
+
   (fetch-lsoa svc "E01012672")
   (require 'clojure.data.json)
   (clojure.data.json/write-str (fetch-lsoa svc "E01012672") :key-fn (fn [k] (str (namespace k) "-" (name k))))
