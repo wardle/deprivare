@@ -2,6 +2,7 @@
 
 [![Scc Count Badge](https://sloc.xyz/github/wardle/deprivare)](https://github.com/wardle/deprivare/)
 [![Scc Cocomo Badge](https://sloc.xyz/github/wardle/deprivare?category=cocomo&avg-wage=100000)](https://github.com/wardle/deprivare/)
+[![Clojars Project](https://img.shields.io/clojars/v/com.eldrix/deprivare.svg)](https://clojars.org/com.eldrix/deprivare)
 
 This provides code and data for indices of deprivation, initially supporting the UK.
 
@@ -203,7 +204,6 @@ The keys are a close reproduction of the original source data.
   "wales-imd-2019/wimd_2019_quintile": "5"
 }
 ```
-
 
 I usually advise thinking of a service as immutable once created. That means
 you create a service and potentially keep it running. I tend to switch versions
