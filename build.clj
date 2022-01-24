@@ -39,6 +39,7 @@
                   :version   version
                   :jar-file  jar-file
                   :class-dir class-dir}))
+  (println "Installing" lib version)
 
 (defn deploy
       "Deploy library to clojars.
