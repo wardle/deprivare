@@ -12,18 +12,23 @@
       (b/delete {:path "target"}))
 
 (defn jar
-      "Create a library jar file."
-      [_]
-      (clean nil)
-      (b/write-pom {:class-dir class-dir
-                    :lib       lib
-                    :version   version
-                    :basis     basis
-                    :src-dirs  ["src"]})
-      (b/copy-dir {:src-dirs   ["src" "resources"]
-                   :target-dir class-dir})
-      (b/jar {:class-dir class-dir
-              :jar-file  jar-file}))
+  "Create a library jar file."
+  [_]
+  (clean nil)
+  (println "Building" lib version)
+  (b/write-pom {:class-dir class-dir
+                :lib       lib
+                :version   version
+                :basis     basis
+                :src-dirs  ["src"]
+                :scm       {:url                 "https://github.com/wardle/deprivare"
+                            :tag                 (str "v" version)
+                            :connection          "scm:git:git://github.com/wardle/deprivare.git"
+                            :developerConnection "scm:git:ssh://git@github.com/wardle/deprivare.git"}})
+  (b/copy-dir {:src-dirs   ["src" "resources"]
+               :target-dir class-dir})
+  (b/jar {:class-dir class-dir
+          :jar-file  jar-file}))
 
 (defn install
       "Install library to local maven repository."
