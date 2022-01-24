@@ -9,7 +9,7 @@
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
 
 (defn clean [_]
-      (b/delete {:path "target"}))
+  (b/delete {:path "target"}))
 
 (defn jar
   "Create a library jar file."
@@ -31,22 +31,22 @@
           :jar-file  jar-file}))
 
 (defn install
-      "Install library to local maven repository."
-      [_]
-      (jar nil)
-      (b/install {:basis     basis
-                  :lib       lib
-                  :version   version
-                  :jar-file  jar-file
-                  :class-dir class-dir}))
+  "Install library to local maven repository."
+  [_]
+  (jar nil)
   (println "Installing" lib version)
+  (b/install {:basis     basis
+              :lib       lib
+              :version   version
+              :jar-file  jar-file
+              :class-dir class-dir}))
 
 (defn deploy
-      "Deploy library to clojars.
-      Environment variables CLOJARS_USERNAME and CLOJARS_PASSWORD must be set."
-      [_]
-      (jar nil)
-      (dd/deploy {:installer :remote
-                  :artifact  jar-file
-                  :pom-file  (b/pom-path {:lib       lib
-                                          :class-dir class-dir})}))
+  "Deploy library to clojars.
+  Environment variables CLOJARS_USERNAME and CLOJARS_PASSWORD must be set."
+  [_]
+  (jar nil)
+  (dd/deploy {:installer :remote
+              :artifact  jar-file
+              :pom-file  (b/pom-path {:lib       lib
+                                      :class-dir class-dir})}))
