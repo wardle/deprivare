@@ -88,7 +88,7 @@
 (defn install-all [{:keys [db]}]
   (if db
     (doseq [dataset (keys datasets/available-data)]
-      (install {:db db :dataset dataset}))
+      (install {:db (str db) :dataset dataset}))
     (println (str/join "\n"
                        ["Invalid parameters"
                         "Usage:   clj -X:install-all :db <database file> "
