@@ -9,9 +9,7 @@
             [clojure.edn :as edn])
   (:import [java.io File]))
 
-(defn parse-double [s] (Double/parseDouble s))
-(defn parse-long [s] (Long/parseLong s))
-(defn parse-double-as-long [s] (long (Double/parseDouble s)))
+(defn parse-double-as-long [s] (long (parse-double s)))
 (def property-parsers
   {:uk-composite-imd-2020-mysoc/income_score          parse-double
    :uk-composite-imd-2020-mysoc/E_expanded_decile     parse-double-as-long
