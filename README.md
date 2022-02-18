@@ -212,6 +212,5 @@ you will likely only switch to a different running service as and when new
 datasets become available. Alternatively, you can, of course, add a new dataset 
 to an existing database. But generally, I advise thinking of these services
 as disposable and potentially ephemeral. Think [cattle not pets](http://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/). 
-```
 
 *Mark*
