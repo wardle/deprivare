@@ -16,7 +16,7 @@
 (def ok (partial response 200))
 (def not-found (partial response 404))
 
-(def supported-types ["text/html" "application/edn" "application/json" "text/plain"])
+(def supported-types ["application/json" "application/edn" "text/plain"])
 (def content-neg-intc (conneg/negotiate-content supported-types))
 
 (defn make-key-string [k]
@@ -46,19 +46,19 @@
 (def coerce-body
   {:name ::coerce-body
    :leave
-         (fn [context]
-           (if (get-in context [:response :headers "Content-Type"])
-             context
-             (update-in context [:response] coerce-to (accepted-type context))))})
+   (fn [context]
+     (if (get-in context [:response :headers "Content-Type"])
+       context
+       (update-in context [:response] coerce-to (accepted-type context))))})
 
 (def entity-render
   "Interceptor to render an entity '(:result context)' into the response."
   {:name :entity-render
    :leave
-         (fn [context]
-           (if-let [item (:result context)]
-             (assoc context :response (ok item))
-             context))})
+   (fn [context]
+     (if-let [item (:result context)]
+       (assoc context :response (ok item))
+       context))})
 
 
 (def get-uk-lsoa-deprivation
