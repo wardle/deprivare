@@ -1,12 +1,12 @@
 (ns com.eldrix.deprivare.datasets
-  (:require [clj-http.client :as client]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.core.async :as a]
             [com.eldrix.deprivare.odf :as odf]
             [clojure.data.csv :as csv]
-            [clojure.edn :as edn])
+            [clojure.edn :as edn]
+            [org.httpkit.client :as http])
   (:import [java.io File]))
 
 (defn parse-double-as-long [s] (long (parse-double s)))
@@ -35,7 +35,7 @@
   no defined user agent, including gov.wales."
   [url prefix suffix]
   (let [f (File/createTempFile prefix suffix)]
-    (with-open [is (:body (client/get url {:headers {"User-Agent" "deprivare v0.1"} :as :stream}))
+    (with-open [is (:body @(http/get url {:headers {"User-Agent" "deprivare v1.0"} :as :stream}))
                 os (io/output-stream f)]
       (io/copy is os)
       f)))

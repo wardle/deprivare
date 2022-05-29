@@ -1,19 +1,19 @@
-{:paths   ["src" ]
- :deps    {org.clojure/clojure       {:mvn/version "1.11.0-rc1"}
+{:paths   ["src"]
+ :deps    {org.clojure/clojure       {:mvn/version "1.11.1"}
            org.clojure/core.async    {:mvn/version "1.5.648"}
-           org.clojure/data.csv      {:mvn/version "1.0.0"}
+           org.clojure/data.csv      {:mvn/version "1.0.1"}
            org.clojure/data.json     {:mvn/version "2.4.0"}
            org.clojure/data.xml      {:mvn/version "0.2.0-alpha6"}
            org.clojure/data.zip      {:mvn/version "1.0.0"}
            org.clojure/tools.logging {:mvn/version "1.2.4"}
 
-           clj-http/clj-http         {:mvn/version "3.12.3"}
+           http-kit/http-kit         {:mvn/version "2.5.3"}
            datalevin/datalevin       {:mvn/version "0.5.28"}
-           com.wsscode/pathom3       {:mvn/version "2022.02.01-1-alpha"}}
+           com.wsscode/pathom3       {:mvn/version "2022.05.19-alpha"}}
 
- :aliases {:build {:deps       {io.github.clojure/tools.build {:git/tag "v0.7.5" :git/sha "34727f7"}
-                                slipset/deps-deploy           {:mvn/version "RELEASE"}}
-                   :ns-default build}
+ :aliases {:build       {:deps       {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}
+                                      slipset/deps-deploy           {:mvn/version "RELEASE"}}
+                         :ns-default build}
 
            :available   {:exec-fn com.eldrix.deprivare.core/print-available}
            :info        {:exec-fn com.eldrix.deprivare.core/dataset-info}
@@ -34,7 +34,7 @@
                          :extra-paths ["server"]
                          :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.5.10"}
                                        io.pedestal/pedestal.jetty     {:mvn/version "0.5.10"}
-                                       ch.qos.logback/logback-classic {:mvn/version "1.2.10"}}
+                                       ch.qos.logback/logback-classic {:mvn/version "1.2.11"}}
                          :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
                                        "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
                                        "--illegal-access=permit"]}
@@ -43,13 +43,17 @@
 
            :test        {:extra-paths ["test" "test/resources"]
                          :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                                  :sha     "cc75980b43011773162b485f46f939dc5fba91e4"}}
+                                                                  :sha     "a85b3b02765fb68684ab9ee4a8598eacf7e471d2"}}
                          :main-opts   ["-m" "cognitect.test-runner"]}
 
-           :log         {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.2.10"}}}
+           :log         {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.2.11"}}}
 
            :outdated    {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
                          :main-opts  ["-m" "antq.core"]}
+
+           :upgrade
+           {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+            :main-opts  ["-m" "antq.core" "--upgrade"]}
 
            :check       {:extra-deps {athos/clj-check
                                       {:git/url "https://github.com/athos/clj-check.git"
@@ -57,12 +61,12 @@
                          :main-opts  ["-m" "clj-check.check" "src"]}
 
            :lint/kondo
-                        {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
-                         :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+            :main-opts  ["-m" "clj-kondo.main" "--lint" "src"]}
 
            :lint/eastwood
-                        {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src" "server"]}]
-                         :extra-deps {jonase/eastwood {:mvn/version "RELEASE"}
-                                      io.pedestal/pedestal.service   {:mvn/version "0.5.10"}
-                                      io.pedestal/pedestal.jetty     {:mvn/version "0.5.10"}}
-                         :extra-paths ["server"]}}}
+           {:main-opts   ["-m" "eastwood.lint" {:source-paths ["src" "server"]}]
+            :extra-deps  {jonase/eastwood              {:mvn/version "RELEASE"}
+                          io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+                          io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}}
+            :extra-paths ["server"]}}}
