@@ -25,8 +25,7 @@
 
 (defn open [dir & {:keys [read-only?] :or {read-only? true}}]
   (if (and read-only? (not (.exists (File. dir))))
-    (do (println "Error: :db specified does not exist")
-        (System/exit 1))
+    (throw (ex-info "Error: :db specified does not exist" dir))
     (->Svc (d/create-conn dir schema))))
 
 (defn close [^Svc svc]
