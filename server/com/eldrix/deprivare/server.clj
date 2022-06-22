@@ -83,24 +83,22 @@
   {:name  ::inject-svc
    :enter (fn [context] (update context :request assoc ::service svc))})
 
-(def service-map
-  {::http/routes routes
-   ::http/type   :jetty
-   ::http/port   8080})
-
-(defn make-service-map [svc port join?]
-  (-> service-map
-      (assoc ::http/port port)
-      (assoc ::http/join? join?)
+(defn make-service-map
+  [svc {:keys [port join? bind-address] :or {port 8080 join? true}}]
+  (-> (merge
+        {::http/routes routes
+         ::http/type   :jetty
+         ::http/port   port
+         ::http/join?  join?}
+        (when bind-address {::http/host bind-address}))
       (http/default-interceptors)
       (update ::http/interceptors conj (intc/interceptor (inject-svc svc)))))
 
 (defn start-server
-  ([svc port] (start-server svc port true))
-  ([svc port join?]
-   (http/start (http/create-server (make-service-map svc port join?)))))
+  [svc params]
+  (http/start (http/create-server (make-service-map svc params))))
 
-(defn run-server [{:keys [db port]}]
+(defn run-server [{:keys [db port bind-address] :as params}]
   (if-not db
     (println (str/join "\n" ["Error: missing :db parameter"
                              "Usage: clj -X:server :db <database file> :port <port>"
@@ -108,8 +106,8 @@
                              "  - :db     : path to database"
                              "  - :port   : HTTP port to use, optional, default 8080"]))
     (with-open [svc (deprivare/open (str db))]
-      (log/info "starting server on port " port)
-      (start-server svc port))))
+      (log/info "starting server " params)
+      (start-server svc params))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For interactive development
