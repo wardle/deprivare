@@ -16,8 +16,8 @@
    :uk-composite-imd-2020-mysoc/original_decile {:db/valueType :db.type/long}
    :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_quintile {:db/valueType :db.type/long}
    :uk-composite-imd-2020-mysoc/employment_score {:db/valueType :db.type/double}
-   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile {:db/valueType :db.type/long}
-   })
+   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile {:db/valueType :db.type/long}})
+
 
 (deftype Svc [conn]
   Closeable
@@ -153,7 +153,7 @@
          :where
          [?e :uk.gov.ons/lsoa ?lsoa]]
        (d/db (.-conn svc))
-       "W01000001")
+       "W01000001"))
 
-  )
+
 
