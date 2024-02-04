@@ -1,15 +1,19 @@
 {:paths   ["src"]
- :deps    {org.clojure/clojure       {:mvn/version "1.11.1"}
-           org.clojure/core.async    {:mvn/version "1.5.648"}
-           org.clojure/data.csv      {:mvn/version "1.0.1"}
-           org.clojure/data.json     {:mvn/version "2.4.0"}
-           org.clojure/data.xml      {:mvn/version "0.2.0-alpha6"}
-           org.clojure/data.zip      {:mvn/version "1.0.0"}
-           org.clojure/tools.logging {:mvn/version "1.2.4"}
+ :deps    {org.clojure/clojure               {:mvn/version "1.11.1"}
+           org.clojure/core.async            {:mvn/version "1.5.648"}
+           org.clojure/data.csv              {:mvn/version "1.0.1"}
+           org.clojure/data.json             {:mvn/version "2.4.0"}
+           org.clojure/data.xml              {:mvn/version "0.2.0-alpha6"}
+           org.clojure/data.zip              {:mvn/version "1.0.0"}
+           org.clojure/tools.logging         {:mvn/version "1.2.4"}
 
-           http-kit/http-kit         {:mvn/version "2.5.3"}
-           datalevin/datalevin       {:mvn/version "0.5.28"}
-           com.wsscode/pathom3       {:mvn/version "2022.05.19-alpha"}}
+           com.github.seancorfield/honeysql  {:mvn/version "2.5.1103"}
+           com.github.seancorfield/next.jdbc {:mvn/version "1.3.909"}
+           com.wsscode/pathom3               {:mvn/version "2022.05.19-alpha"}
+           org.xerial/sqlite-jdbc            {:mvn/version "3.45.1.0"}
+           hato/hato                         {:mvn/version "0.9.0"}}
+
+
 
  :aliases {:build       {:deps       {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}
                                       slipset/deps-deploy           {:mvn/version "RELEASE"}}
@@ -17,27 +21,18 @@
 
            :available   {:exec-fn com.eldrix.deprivare.core/print-available}
            :info        {:exec-fn com.eldrix.deprivare.core/dataset-info}
-           :install     {:exec-fn  com.eldrix.deprivare.core/install
-                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                    "--illegal-access=permit"]}
-           :install-all {:exec-fn  com.eldrix.deprivare.core/install-all
-                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                    "--illegal-access=permit"]}
-           :installed   {:exec-fn  com.eldrix.deprivare.core/print-installed
-                         :jvm-opts ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                    "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                    "--illegal-access=permit"]}
+           :install     {:exec-fn  com.eldrix.deprivare.core/install}
+           :install-all {:exec-fn  com.eldrix.deprivare.core/install-all}
+
+           :installed   {:exec-fn  com.eldrix.deprivare.core/print-installed}
+
            :server      {:exec-fn     com.eldrix.deprivare.server/run-server
                          :exec-args   {:port 8080}
                          :extra-paths ["server"]
                          :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.5.10"}
                                        io.pedestal/pedestal.jetty     {:mvn/version "0.5.10"}
-                                       ch.qos.logback/logback-classic {:mvn/version "1.2.11"}}
-                         :jvm-opts    ["--add-opens" "java.base/java.nio=ALL-UNNAMED"
-                                       "--add-opens" "java.base/sun.nio.ch=ALL-UNNAMED"
-                                       "--illegal-access=permit"]}
+                                       ch.qos.logback/logback-classic {:mvn/version "1.2.11"}}}
+
 
            :pathom-viz  {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2022.02.14"}}}
 
