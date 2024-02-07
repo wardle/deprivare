@@ -24,7 +24,18 @@
                 :scm       {:url                 "https://github.com/wardle/deprivare"
                             :tag                 (str "v" version)
                             :connection          "scm:git:git://github.com/wardle/deprivare.git"
-                            :developerConnection "scm:git:ssh://git@github.com/wardle/deprivare.git"}})
+                            :developerConnection "scm:git:ssh://git@github.com/wardle/deprivare.git"}
+                :pom-data  [[:description]
+                            "Deprivation indices in the United Kingdom"
+                            [:developers
+                             [:developer
+                              [:id "wardle"] [:name "Mark Wardle"] [:email "mark@wardle.org"] [:url "https://wardle.org"]]]
+                            [:organization [:name "Eldrix Ltd"]]
+                            [:licenses
+                             [:license
+                              [:name "Eclipse Public License v2.0"]
+                              [:url "https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html"]
+                              [:distribution "repo"]]]]})
   (b/copy-dir {:src-dirs   ["src" "resources"]
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
