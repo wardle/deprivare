@@ -25,8 +25,7 @@
                             :tag                 (str "v" version)
                             :connection          "scm:git:git://github.com/wardle/deprivare.git"
                             :developerConnection "scm:git:ssh://git@github.com/wardle/deprivare.git"}
-                :pom-data  [[:description]
-                            "Deprivation indices in the United Kingdom"
+                :pom-data  [[:description "Deprivation indices in the United Kingdom"]
                             [:developers
                              [:developer
                               [:id "wardle"] [:name "Mark Wardle"] [:email "mark@wardle.org"] [:url "https://wardle.org"]]]
