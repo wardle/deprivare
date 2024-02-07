@@ -1,82 +1,83 @@
 (ns com.eldrix.deprivare.core
   (:require [clojure.core.async :as a]
+            [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
             [com.eldrix.deprivare.datasets :as datasets]
-            [datalevin.core :as d])
-  (:import (java.io Closeable File)
-           (java.time LocalDateTime)))
+            [com.eldrix.deprivare.store :as store])
+  (:import (java.io Closeable)
+           (java.sql Connection)))
 
-(def schema
-  {:uk-composite-imd-2020-mysoc/UK_IMD_E_rank {:db/valueType :db.type/long}
-   :uk-composite-imd-2020-mysoc/income_score {:db/valueType :db.type/double}
-   :uk-composite-imd-2020-mysoc/E_expanded_decile {:db/valueType :db.type/long}
-   :uk-composite-imd-2020-mysoc/UK_IMD_E_score {:db/valueType :db.type/double}
-   :uk-composite-imd-2020-mysoc/overall_local_score {:db/valueType :db.type/double}
-   :uk-composite-imd-2020-mysoc/original_decile {:db/valueType :db.type/long}
-   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_quintile {:db/valueType :db.type/long}
-   :uk-composite-imd-2020-mysoc/employment_score {:db/valueType :db.type/double}
-   :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile {:db/valueType :db.type/long}})
-
-
-(deftype Svc [conn]
+(deftype Svc [^Connection conn fetch-lsoa-fn]
   Closeable
-  (close [_] (d/close conn)))
+  (close [_] (.close conn)))
 
-(defn open [dir & {:keys [read-only?] :or {read-only? true}}]
-  (if (and read-only? (not (.exists (File. dir))))
-    (throw (ex-info "Error: :db specified does not exist" {:dir dir}))
-    (->Svc (d/create-conn dir schema))))
+(defn open
+  "Open a deprivare index from the filename specified."
+  [filename & {:keys [read-only?] :or {read-only? true}}]
+  (when (and read-only? (not (.exists (io/file filename))))
+    (throw (ex-info (str "index not found: " filename) {})))
+  (let [conn (store/open-connection filename)
+        fetch-lsoa (store/make-fetch-lsoa conn)]
+    (store/check-version! conn read-only?)
+    (->Svc conn fetch-lsoa)))
 
 (defn close [^Svc svc]
-  (d/close (.-conn svc)))
+  (.close ^Connection (.-conn svc)))
 
-(defn print-available [_params]
-  (pprint/print-table (map (fn [[k v]] (hash-map :id (name k) :name (:title v))) (reverse (sort-by :year datasets/available-data)))))
+(defn print-available [_]
+  (pprint/print-table
+    (map (fn [[k v]] (hash-map :id (name k) :name (:title v)))
+         (reverse (sort-by :year datasets/dataset-by-id)))))
 
-(defn dataset-info [params]
-  (if-let [dataset (get datasets/available-data (keyword (:dataset params)))]
+(defn fetch-lsoa [^Svc svc lsoa]
+  ((.-fetch-lsoa-fn svc) lsoa))
+
+(defn available-properties [^Svc svc]
+  (store/available-properties (.-conn svc)))
+
+(defn fetch-installed [^Svc svc]
+  (store/fetch-installed-datasets (.-conn svc)))
+
+
+;; **************************************************************************
+;;
+;; Command-line interface
+;;
+;; These functions are designed to be executed from the command-line using
+;; clojure -X:xxxx .. ..
+;;
+;; **************************************************************************
+
+(defn dataset-info
+  "Return information about the named dataset.
+  Parameters:
+  - dataset : a string version of the dataset identifier"
+  [{:keys [dataset]}]
+  (if-let [dataset (get datasets/dataset-by-id (keyword dataset))]
     (do
       (println (:title dataset))
       (println (apply str (repeat (count (:title dataset)) "-")))
       (println (:description dataset)))
     (println "Invalid :dataset parameter.\nUsage: clj -X:list to see available datasets.")))
 
-(defn register-dataset [svc k]
-  (d/transact! (.-conn svc)
-               [{:installed/id   k
-                 :installed/date (LocalDateTime/now)}]))
-
-(defn fetch-installed [^Svc svc]
-  (d/q '[:find [?id ...]
-         :in $
-         :where
-         [?e :installed/id ?id]
-         [?e :installed/date ?date-time]]
-       (d/db (.-conn svc))))
-
-(defn print-installed [{:keys [db]}]
+(defn print-installed
+  [{:keys [db]}]
   (if db
     (let [svc (open (str db))
-          ids (fetch-installed svc)
-          result (map #(hash-map :id (name %) :name (:title (get datasets/available-data %))) ids)]
+          ids (map :id (fetch-installed svc))
+          result (map #(hash-map :id (name %) :name (:title (get datasets/dataset-by-id %))) ids)]
       (pprint/print-table result))
     (println "Invalid :db parameter.\nUsage: clj -X:installed :db <database file>")))
 
-
-(defn install [{:keys [db dataset]}]
+(defn install
+  [{:keys [db dataset]}]
   (if (and db dataset)
-    (if-let [dataset' (get datasets/available-data (keyword dataset))]
+    (if-let [dataset' (get datasets/dataset-by-id (keyword dataset))]
       (with-open [svc (open (str db) :read-only? false)]
         (println "Installing dataset: " (:title dataset'))
-        (let [ch (a/chan 16 (partition-all 1024))]
-          (a/thread ((:stream-fn dataset') ch)
-                    (a/close! ch))
-          (loop [batch (a/<!! ch)]
-            (when batch
-              (d/transact! (.-conn svc) batch)
-              (recur (a/<!! ch))))
-          (register-dataset svc (keyword dataset))))
+        (let [ch (a/chan 16 (partition-all 1048576))]
+          (store/import-dataset (.-conn svc) ch dataset')))
       (println "Invalid :dataset parameter.\nUse clj -X:list to see available datasets."))
     (println (str/join "\n"
                        ["Invalid parameters"
@@ -84,76 +85,22 @@
                         "  - :db      - filename of database eg. 'depriv.db'"
                         "  - :dataset - identifier of dataset eg. 'uk-composite-imd-2020-mysoc'"]))))
 
-(defn install-all [{:keys [db]}]
+(defn install-all
+  [{:keys [db]}]
   (if db
-    (doseq [dataset (keys datasets/available-data)]
-      (install {:db (str db) :dataset dataset}))
+    (doseq [dataset-id (map :id datasets/datasets)]
+      (install {:db (str db) :dataset dataset-id}))
     (println (str/join "\n"
                        ["Invalid parameters"
                         "Usage:   clj -X:install-all :db <database file> "
                         "  - :db      - filename of database eg. 'depriv.db'"]))))
 
-(defn fetch-lsoa [svc lsoa]
-  (-> (apply merge
-             (d/q '[:find [(pull ?e [*]) ...]
-                    :in $ ?lsoa
-                    :where
-                    [?e :uk.gov.ons/lsoa ?lsoa]]
-                  (d/db (.-conn svc))
-                  lsoa))
-      (dissoc :db/id :dataset)))
-
-(defn fetch-max
-  "Return the maximum value of the keyword specified.
-  Useful if you want to calculate something special from a rank.
-  For example, (fetch-max svc :uk-composite-imd-2020-mysoc/UK_IMD_E_rank)"
-  [svc k]
-  (d/q '[:find (max ?x) .
-         :in $ ?k
-         :where
-         [_ ?k ?x]]
-       (d/db (.-conn svc))
-       k))
-
 (comment
-
-  (def svc (open "depriv.db"))
-
-  (d/transact! (.-conn svc)
-               [{:installed/id   :uk-composite-imd-2020-mysoc2
-                 :installed/date (LocalDateTime/now)}])
-  (d/q '[:find ?rank ?decile
-         :in $ ?lsoa
-         :where
-         [?e :uk.gov.ons/lsoa ?lsoa]
-         [?e :uk-composite-imd-2020-mysoc/UK_IMD_E_rank ?rank]
-         [?e :uk-composite-imd-2020-mysoc/UK_IMD_E_pop_decile ?decile]]
-       (d/db (.-conn svc))
-       "E01012672")
-
-  (d/q '[:find (max ?rank) .
-         :in $
-         :where
-         [_ :uk-composite-imd-2020-mysoc/UK_IMD_E_rank ?rank]]
-       (d/db (.-conn svc)))
-
+  (def svc (open "depriv2.db"))
   (fetch-lsoa svc "E01012672")
+  (fetch-lsoa svc "W01001552")
   (require 'clojure.data.json)
-  (clojure.data.json/write-str (fetch-lsoa svc "E01012672") :key-fn (fn [k] (str (namespace k) "-" (name k))))
-  (d/q '[:find [?id ...]
-         :in $
-         :where
-         [?e :installed/id ?id]
-         [?e :installed/date ?date-time]]
-       (d/db (.-conn svc)))
-
-
-  (d/q '[:find [(pull ?e [*]) ...]
-         :in $ ?lsoa
-         :where
-         [?e :uk.gov.ons/lsoa ?lsoa]]
-       (d/db (.-conn svc))
-       "W01000001"))
+  (clojure.data.json/write-str (fetch-lsoa svc "E01012672") :key-fn (fn [k] (str (namespace k) "-" (name k)))))
 
 
 

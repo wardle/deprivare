@@ -82,5 +82,4 @@
   (sheet-names f)
   (take 10 (sheet-rows f "WIMD_2019_ranks"))
   (sheet-data f "Deciles_quintiles_quartiles")
-  (take 4 (rest (sheet-data f "Deciles_quintiles_quartiles" :headings [:lsoa :nm :la :wimd2019 :decile :quintile :quartile] :pred #(= 7 (count %)))))
-  )
+  (take 4 (rest (sheet-data f "Deciles_quintiles_quartiles" :headings [:lsoa :nm :la :wimd2019 :decile :quintile :quartile] :pred #(= 7 (count %))))))

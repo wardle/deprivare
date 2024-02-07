@@ -21,6 +21,11 @@ I combine medical records with [nhspd](https://github.com/wardle/nhspd) and the
 data made available via this repository so I can include deprivation as a 
 factor in analysis using a graph-like API as part of my PatientCare EPR. 
 
+`Deprivare` uses a SQLite database which can be used directly (e.g. if you are
+using Python which has SQLite bindings built-in, or any other programming language 
+with SQLite bindings available), or via an API on the JVM (e.g. from Java or Clojure), 
+or via a HTTP API through running a HTTP server.
+
 # Deprivation indices
 
 
@@ -67,7 +72,7 @@ area statistics. You can use [nhspd](https://github.com/wardle/nhspd) to map fro
 This description assumes you want to run using source code directly. 
 If there is interest, I can provide pre-built executable files as an alternative.
 
-1. Download and [install clojure](https://clojure.org/guides/getting_started).
+1. Download and [install Clojure](https://clojure.org/guides/getting_started).
 
 e.g. on mac os x with homebrew:
 
