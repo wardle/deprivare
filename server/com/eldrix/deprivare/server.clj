@@ -114,8 +114,7 @@
 (defonce server (atom nil))
 
 (defn start-dev [svc port]
-  (reset! server
-          (http/start (http/create-server (make-service-map svc port false)))))
+  (reset! server (http/start (http/create-server (make-service-map svc {:port port, :join? false})))))
 
 (defn stop-dev []
   (http/stop @server))
