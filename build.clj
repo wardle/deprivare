@@ -64,7 +64,8 @@
                                       :class-dir class-dir})}))
 
 (defn uber
-  [_]
+  [{:keys [out] :or {out uber-file}}]
+  (println "Building uberjar " out)
   (clean nil)
   (b/copy-dir {:src-dirs ["resources"] :target-dir class-dir})
   (b/copy-file {:src "server/logback.xml" :target (str class-dir "/logback.xml")})
@@ -75,6 +76,6 @@
                                  :direct-linking true}
                   :class-dir    class-dir})
   (b/uber {:class-dir class-dir
-           :uber-file uber-file
+           :uber-file out
            :basis     uber-basis
            :main      'com.eldrix.deprivare.server}))
