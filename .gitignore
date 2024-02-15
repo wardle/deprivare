@@ -1,5 +1,6 @@
 pom.xml
 pom.xml.asc
+.eastwood
 *.jar
 *.class
 *.iml
@@ -15,4 +16,4 @@ pom.xml.asc
 .nrepl-port
 .cpcache/
 .clj-kondo
-depriv.db
+*.db

@@ -34,7 +34,7 @@
   [conn ch {:keys [stream-fn create-sql insert-sql insert-data index-sql], :as dataset}]
   (when-not (s/valid? ::datasets/dataset dataset)
     (throw (ex-info "invalid dataset specification" (s/explain-data ::datasets/dataset dataset))))
-  (async/thread (stream-fn ch))
+  (async/thread (stream-fn dataset ch))
   (log/info "started import of dataset" (select-keys dataset [:id :title]))
   (jdbc/execute-one! conn [create-sql])
   (let [data-fn (if (fn? insert-data) insert-data (apply juxt insert-data))]
@@ -64,6 +64,12 @@
     (update-keys (jdbc/execute-one! conn [fetch-sql lsoa] {:builder-fn rs/as-unqualified-maps})
                  #(keyword nspace (name %)))))
 
+(defn do-fetch-lsoa
+  [conn {:keys [id fetch-sql]} lsoa]
+  (let [nspace (name id)]
+    (update-keys (jdbc/execute-one! conn [fetch-sql lsoa] {:builder-fn rs/as-unqualified-maps})
+                 #(keyword nspace (name %)))))
+
 (defn make-fetch-lsoa
   [conn]
   (let [datasets (fetch-installed-datasets conn)]
@@ -86,7 +92,7 @@
   (async/thread ((:stream-fn dataset) ch))
   (async/<!! ch)
   (def fetch-lsoa (make-fetch-lsoa conn))
-  (fetch-lsoa "W01001552"))
+  (fetch-lsoa " "))
 
 
 
