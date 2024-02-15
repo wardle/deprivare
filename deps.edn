@@ -1,4 +1,4 @@
-{:paths   ["src"]
+{:paths   ["src" "resources"]
  :deps    {org.clojure/clojure               {:mvn/version "1.11.1"}
            org.clojure/core.async            {:mvn/version "1.6.681"}
            org.clojure/data.csv              {:mvn/version "1.0.1"}
@@ -13,47 +13,79 @@
            org.xerial/sqlite-jdbc            {:mvn/version "3.45.1.0"}
            hato/hato                         {:mvn/version "0.9.0"}}
 
+ :aliases {:build
+           {:deps       {io.github.clojure/tools.build {:git/tag "v0.9.6" :git/sha "8e78bcc"}
+                         slipset/deps-deploy           {:mvn/version "RELEASE"}}
+            :ns-default build}
+
+           :dev
+           {:extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
+                         org.apache.logging.log4j/log4j-api          {:mvn/version "2.22.1"}
+                         org.apache.logging.log4j/log4j-core         {:mvn/version "2.22.1"}
+                         org.apache.logging.log4j/log4j-slf4j18-impl {:mvn/version "2.18.0"}}}
+
+           :available
+           {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}
+            :exec-fn    com.eldrix.deprivare.core/print-available}
+
+           :info
+           {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}
+            :exec-fn    com.eldrix.deprivare.core/dataset-info}
+
+           :install
+           {:extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
+                         org.apache.logging.log4j/log4j-api          {:mvn/version "2.22.1"}
+                         org.apache.logging.log4j/log4j-core         {:mvn/version "2.22.1"}
+                         org.apache.logging.log4j/log4j-slf4j18-impl {:mvn/version "2.18.0"}}
+            :jvm-opts   ["-Dlog4j2.configurationFile=log4j2-suppress-poi.xml"]
+            :exec-fn    com.eldrix.deprivare.core/install}
+
+           :install-all
+           {:extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
+                         org.apache.logging.log4j/log4j-api          {:mvn/version "2.22.1"}
+                         org.apache.logging.log4j/log4j-core         {:mvn/version "2.22.1"}
+                         org.apache.logging.log4j/log4j-slf4j18-impl {:mvn/version "2.18.0"}}
+            :jvm-opts   ["-Dlog4j2.configurationFile=log4j2-suppress-poi.xml"]
+            :exec-fn    com.eldrix.deprivare.core/install-all}
 
 
- :aliases {:build       {:deps       {io.github.clojure/tools.build {:git/tag "v0.9.6" :git/sha "8e78bcc"}
-                                      slipset/deps-deploy           {:mvn/version "RELEASE"}}
-                         :ns-default build}
+           :installed
+           {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}
+            :exec-fn    com.eldrix.deprivare.core/print-installed}
 
-           :available   {:exec-fn com.eldrix.deprivare.core/print-available}
-           :info        {:exec-fn com.eldrix.deprivare.core/dataset-info}
-           :install     {:exec-fn  com.eldrix.deprivare.core/install}
-           :install-all {:exec-fn  com.eldrix.deprivare.core/install-all}
-
-           :installed   {:exec-fn  com.eldrix.deprivare.core/print-installed}
-
-           :server      {:exec-fn     com.eldrix.deprivare.server/run-server
-                         :exec-args   {:port 8080}
-                         :extra-paths ["server"]
-                         :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.6.3"}
-                                       io.pedestal/pedestal.jetty     {:mvn/version "0.6.3"}
-                                       ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}}
+           :server
+           {:exec-fn     com.eldrix.deprivare.server/run-server
+            :exec-args   {:port 8080}
+            :extra-paths ["server"]
+            :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.6.3"}
+                          io.pedestal/pedestal.jetty     {:mvn/version "0.6.3"}
+                          ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}}
 
 
-           :pathom-viz  {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2022.02.14"}}}
+           :pathom-viz
+           {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2022.02.14"}}}
 
-           :test        {:extra-paths ["test" "test/resources"]
-                         :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                                  :sha     "7284cda41fb9edc0f3bc6b6185cfb7138fc8a023"}}
-                         :main-opts   ["-m" "cognitect.test-runner"]}
+           :test
+           {:extra-paths ["test" "test/resources"]
+            :extra-deps  {com.cognitect/test-runner      {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                          :sha     "7284cda41fb9edc0f3bc6b6185cfb7138fc8a023"}
+                          ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}
+            :main-opts   ["-m" "cognitect.test-runner"]}
 
-           :log         {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}}
+           :log
+           {:extra-deps {ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}}
 
-           :outdated    {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
-                         :main-opts  ["-m" "antq.core"]}
+           :outdated
+           {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+            :main-opts  ["-m" "antq.core"]}
 
            :upgrade
            {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
             :main-opts  ["-m" "antq.core" "--upgrade"]}
 
-           :check       {:extra-deps {athos/clj-check
-                                      {:git/url "https://github.com/athos/clj-check.git"
-                                       :sha     "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
-                         :main-opts  ["-m" "clj-check.check" "src"]}
+           :check {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check.git"
+                                                 :sha     "518d5a1cbfcd7c952f548e6dbfcb9a4a5faf9062"}}
+                   :main-opts  ["-m" "clj-check.check" "src"]}
 
            :lint/kondo
            {:extra-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}

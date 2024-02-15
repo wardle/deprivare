@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### Not yet released
+
+* Add English index of deprivation, 2019
+
 ### [v2.0.62] - 2024-02-07
 
 * Use SQLite as data store
