@@ -114,8 +114,9 @@
   (when-not (= 2 (count args))
     (println "Usage: java -jar deprivare.jar <depriv.db> <port>")
     (System/exit 1))
-  (run-server {:db (first args)
-               :port (parse-long (second args))}))
+  (run-server {:db           (first args)
+               :port         (parse-long (second args))
+               :bind-address "0.0.0.0"}))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -222,4 +222,16 @@ datasets become available. Alternatively, you can, of course, add a new dataset
 to an existing database. But generally, I advise thinking of these services
 as disposable and potentially ephemeral. Think [cattle not pets](http://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/). 
 
+#### Running from Docker
+
+An example Dockerfile is provided. This builds an uberjar and then creates 
+a deprivare data file. Running the resulting image runs a HTTP server that
+returns deprivation data for a given LSOA.
+
+```shell
+docker build -t deprivare .
+docker run --publish 8080:8080 deprivare
+```
+
+
 *Mark*
