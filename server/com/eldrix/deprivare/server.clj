@@ -1,4 +1,5 @@
 (ns com.eldrix.deprivare.server
+  (:gen-class)
   (:require [clojure.string :as str]
             [clojure.data.json :as json]
             [clojure.tools.logging.readable :as log]
@@ -108,6 +109,14 @@
     (with-open [svc (deprivare/open (str db))]
       (log/info "starting server " params)
       (start-server svc params))))
+
+(defn -main [& args]
+  (when-not (= 2 (count args))
+    (println "Usage: java -jar deprivare.jar <depriv.db> <port>")
+    (System/exit 1))
+  (run-server {:db (first args)
+               :port (parse-long (second args))}))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; For interactive development

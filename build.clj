@@ -6,7 +6,9 @@
 (def version (format "2.0.%s" (b/git-count-revs nil)))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
+(def uber-basis (b/create-basis {:project "deps.edn", :aliases [:server]}))
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
+(def uber-file (format "target/%s-server-%s.jar" (name lib) version))
 
 (defn clean [_]
   (b/delete {:path "target"}))
@@ -60,3 +62,19 @@
               :artifact  jar-file
               :pom-file  (b/pom-path {:lib       lib
                                       :class-dir class-dir})}))
+
+(defn uber
+  [_]
+  (clean nil)
+  (b/copy-dir {:src-dirs ["resources"] :target-dir class-dir})
+  (b/copy-file {:src "server/logback.xml" :target (str class-dir "/logback.xml")})
+  (b/compile-clj {:basis        uber-basis
+                  :src-dirs     ["src" "server"]
+                  :ns-compile   ['com.eldrix.deprivare.server]
+                  :compile-opts {:elide-meta     [:doc :added]
+                                 :direct-linking true}
+                  :class-dir    class-dir})
+  (b/uber {:class-dir class-dir
+           :uber-file uber-file
+           :basis     uber-basis
+           :main      'com.eldrix.deprivare.server}))

@@ -1,4 +1,4 @@
-{:paths   ["src" "resources"]
+{:paths   ["src"]
  :deps    {org.clojure/clojure               {:mvn/version "1.11.1"}
            org.clojure/core.async            {:mvn/version "1.6.681"}
            org.clojure/data.csv              {:mvn/version "1.0.1"}
@@ -19,7 +19,8 @@
             :ns-default build}
 
            :dev
-           {:extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
+           {:extra-paths ["resources"]
+            :extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
                          org.apache.logging.log4j/log4j-api          {:mvn/version "2.22.1"}
                          org.apache.logging.log4j/log4j-core         {:mvn/version "2.22.1"}
                          org.apache.logging.log4j/log4j-slf4j18-impl {:mvn/version "2.18.0"}}}
@@ -33,7 +34,8 @@
             :exec-fn    com.eldrix.deprivare.core/dataset-info}
 
            :install
-           {:extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
+           {:extra-paths ["resources"]
+            :extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
                          org.apache.logging.log4j/log4j-api          {:mvn/version "2.22.1"}
                          org.apache.logging.log4j/log4j-core         {:mvn/version "2.22.1"}
                          org.apache.logging.log4j/log4j-slf4j18-impl {:mvn/version "2.18.0"}}
@@ -41,7 +43,8 @@
             :exec-fn    com.eldrix.deprivare.core/install}
 
            :install-all
-           {:extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
+           {:extra-paths ["resources"]
+            :extra-deps {dk.ative/docjure                            {:mvn/version "1.19.0"}
                          org.apache.logging.log4j/log4j-api          {:mvn/version "2.22.1"}
                          org.apache.logging.log4j/log4j-core         {:mvn/version "2.22.1"}
                          org.apache.logging.log4j/log4j-slf4j18-impl {:mvn/version "2.18.0"}}
@@ -54,13 +57,13 @@
             :exec-fn    com.eldrix.deprivare.core/print-installed}
 
            :server
-           {:exec-fn     com.eldrix.deprivare.server/run-server
-            :exec-args   {:port 8080}
-            :extra-paths ["server"]
+           {:extra-paths ["server"]
             :extra-deps  {io.pedestal/pedestal.service   {:mvn/version "0.6.3"}
                           io.pedestal/pedestal.jetty     {:mvn/version "0.6.3"}
-                          ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}}
-
+                          ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}
+            :exec-fn     com.eldrix.deprivare.server/run-server
+            :exec-args   {:port 8080}
+            :main-opts   ["-m" "com.eldrix.deprivare.server"]}
 
            :pathom-viz
            {:extra-deps {com.wsscode/pathom-viz-connector {:mvn/version "2022.02.14"}}}
