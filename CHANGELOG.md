@@ -1,8 +1,9 @@
 # CHANGELOG
 
-### Not yet released
+### [v2.0.72] - 2024-02-15
 
 * Add English index of deprivation, 2019
+* Improved Dockerfile with multi-stage build and smaller image size
 
 ### [v2.0.62] - 2024-02-07
 
