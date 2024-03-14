@@ -140,9 +140,7 @@ Installing dataset:  Welsh Index of Deprivation - quantiles, 2019
 Installing dataset:  England Index of Deprivation - ranks, 2019
 ```
 
-Usually, installing all known datasets is reasonable. The file-based database
-is backed by an optimised memory-mapped key value store (lmdb) with excellent
-read-performance. 
+Usually, installing all known datasets is reasonable.
 
 Alternatively, you can install a specific set of datasets:
 
@@ -232,6 +230,5 @@ returns deprivation data for a given LSOA.
 docker build -t deprivare .
 docker run --publish 8080:8080 deprivare
 ```
-
 
 *Mark*
